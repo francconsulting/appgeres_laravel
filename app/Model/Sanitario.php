@@ -14,13 +14,9 @@ class Sanitario extends Model
 
 
     protected $table = 'sanitarios';  //tabla asociada al modelo
-    protected $guarded = 'id';          //proteger que no se pueda setear la porpiedad id con algún valor
+    protected $guarded = ['id', 'dtA', 'dtU', 'deleted_at'] ;      //proteger que no se pueda asignar en masa porpiedad con algún valor
     protected $dates = ['deleted_at']; //campo para el borrado logico
 
 
-    public function  todos(){
-        $todos = $this->all();
-        var_dump($todos[0]);
-        var_dump($this);
-    }
+
 }

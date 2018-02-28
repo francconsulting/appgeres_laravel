@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\Model\Sanitario;
+use Illuminate\Support\Facades\Redirect;
 
 class SanitariosController extends Controller
 {
@@ -58,15 +59,14 @@ class SanitariosController extends Controller
     }
 
 
-    public function todos(){
+    /**
+     * Insertar un nuevo registro
+     * @param Request $request
+     * @return string
+     */
+    public function postSanitario(Request $request){
         $sanitario = new Sanitario();
-        $sanitario->todos();
-    }
-
-    public function nuevo(){
-        $sanitario = new Sanitario();
-        $sanitario->id = '4';
-        $sanitario->sDni = '28495114T';
+        $sanitario->sDni = '28495114t';
         $sanitario->sNombre = 'Franc2';
         $sanitario->sApellidos = 'br vñ';
         $sanitario->cGenero = 'H';
@@ -84,28 +84,61 @@ class SanitariosController extends Controller
         return "registro guardado correctamente";
     }
 
-    public function borrar($id){
+    /**
+     * Borrar un nuevo, con el método SoftDelete
+     * @param $id
+     * @return string
+     */
+    public function deleteSoft($id){
         $sanitario = Sanitario::find($id);
         $sanitario->cBorrado = 'Si';
         $sanitario->save(); //actualizar el campo borrado
         $sanitario->delete(); //actualiza el timestamp de borrado
 
-        return "registro ". $id. " borrado correctamente";
+        echo  "registro ". $id. " borrado correctamente";
+        return redirect('/sanitarios');
     }
 
-    /**
-     * Insertar un nuevo registro
-     */
-    public function postSanitario(){
 
+    public function deleteHard($id){
+        Sanitario::withTrashed()->where('id', $id)->forceDelete();
+        echo "registros  borrado correctamente";
+
+        return redirect('/sanitarios');
+
+
+    }
+
+    public function deleteAllHard(){
+        $sanitarios = Sanitario::withTrashed()->whereNotNull('deleted_at');
+        $sanitarios->each( function ($item){
+           $item->forceDelete();
+        });
+        return redirect('/sanitarios');
     }
 
     /**
      * Actualizar un registro
      * @param $id
      */
-    public function putSanitario($id){
+    public function putSanitario($id, Request $request){
+        $sanitario =  Sanitario::find($id);
+        $sanitario->sDni = $request->sDni;
+        $sanitario->sNombre = 'Franc2';
+        $sanitario->sApellidos = 'br vñ';
+        $sanitario->cGenero = 'H';
+        $sanitario->sEmail = 'email@email.com';
+        $sanitario->sTelefono1 = '666666666';
+        $sanitario->sTelefono2 = '655555555';
+        $sanitario->sDireccion = 'direccion';
+        $sanitario->sCodigoPostal = '12521';
+        $sanitario->idA = '1';
+        $sanitario->idU = '1';
+        $sanitario->cActivo = 'Si';
+        $sanitario->cBorrado = 'No';
 
+        $sanitario->save();
+        return "registro actualizado";
     }
 
     /**
