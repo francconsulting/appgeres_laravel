@@ -13,10 +13,6 @@
 //Route::auth();
 
 
-
-
-
-
 Route::group(['middleware' => 'auth'], function () {
     //    Route::get('/link1', function ()    {
 //        // Uses Auth Middleware
@@ -28,11 +24,28 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 //agregado el grupo para que acceda al login directamente
-Route::group(['middleware' => 'web'], function () {
+Route::group(['middleware' => ['auth','web']], function () {
     Route::auth();
-    Route::get('/home', 'HomeController@index');
+    //Route::get('/home', 'HomeController@index');
+    Route::get('/home', 'Sanitarios\SanitariosController@getPrueba');
+
+    Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
+    Route::get('/sanitarios', 'Sanitarios\SanitariosController@getAllSanitario');
+    Route::get('/todos', 'Sanitarios\SanitariosController@todos');
+    Route::get('/new', 'Sanitarios\SanitariosController@nuevo');
+    Route::get('/borrar/{id}', 'Sanitarios\SanitariosController@borrar');
+
     Route::get('/', function () {
         return view('welcome');
+    });
+
+
+
+
+    Route::get('/limpiarCache', function () {
+        $exitCode = Artisan::call('cache:clear');
+        //return redirect()->action('Sanitarios\SanitariosController@getPrueba');
+        return "Cache limpiada";
     });
 });
 
@@ -44,6 +57,7 @@ Route::group(['middleware' => 'web'], function () {
  */
 Route::get('/', function () {
     return view('welcome');
+    //return redirect()->action('Sanitarios\SanitariosController@getPrueba');
 })->middleware('auth');
 
 Route::get('/prueba', 'Sanitarios\SanitariosController@getPrueba');
