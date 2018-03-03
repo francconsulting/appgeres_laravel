@@ -75,8 +75,8 @@ class SanitariosController extends Controller
         $sanitario->sTelefono2 = '655555555';
         $sanitario->sDireccion = 'direccion';
         $sanitario->sCodigoPostal = '12521';
-        $sanitario->idA = '1';
-        $sanitario->idU = '1';
+        $sanitario->idA = Auth::user()->id;
+        $sanitario->idU = Auth::user()->id;
         $sanitario->cActivo = 'Si';
         $sanitario->cBorrado = 'No';
 
@@ -132,8 +132,7 @@ class SanitariosController extends Controller
         $sanitario->sTelefono2 = '655555555';
         $sanitario->sDireccion = 'direccion';
         $sanitario->sCodigoPostal = '12521';
-        $sanitario->idA = '1';
-        $sanitario->idU = '1';
+        $sanitario->idU = Auth::user()->id;
         $sanitario->cActivo = 'Si';
         $sanitario->cBorrado = 'No';
 
