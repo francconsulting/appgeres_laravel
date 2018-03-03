@@ -27,6 +27,12 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => ['auth','web']], function () {
     Route::auth();
     //Route::get('/home', 'HomeController@index');
+    Route::get('/inicio', function() {
+
+        return view('inicio', ['tituloModulo' => 'Usuariosssss']);
+    });
+
+
     Route::get('/home', 'Sanitarios\SanitariosController@getPrueba');
 
     Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
