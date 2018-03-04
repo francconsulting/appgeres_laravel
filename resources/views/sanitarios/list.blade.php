@@ -6,6 +6,7 @@
 
 @section('contentheader_title')
     "en el header" {{$tituloModulo}}
+    {{$aSanitarios}}
 @endsection
 
 @section('main-content')

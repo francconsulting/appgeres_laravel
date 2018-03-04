@@ -12,7 +12,6 @@
 */
 //Route::auth();
 
-
 Route::group(['middleware' => 'auth'], function () {
     //    Route::get('/link1', function ()    {
 //        // Uses Auth Middleware
@@ -27,13 +26,10 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => ['auth','web']], function () {
     Route::auth();
     //Route::get('/home', 'HomeController@index');
-    Route::get('/inicio', function() {
-
-        return view('inicio', ['tituloModulo' => 'Usuariosssss']);
-    });
 
 
-    Route::get('/home', 'Sanitarios\SanitariosController@getPrueba');
+
+    Route::get('/PersonalSanitario', 'Sanitarios\SanitariosController@index');
 
     Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
     Route::get('/sanitarios', 'Sanitarios\SanitariosController@getAllSanitario');

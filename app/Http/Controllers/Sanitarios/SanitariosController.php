@@ -17,8 +17,9 @@ class SanitariosController extends Controller
         $this->middleware('auth');
     }
 
-    public function getPrueba(){
-        return "pruebasss";
+    public function index(){
+        $sanitarios = $this->getAllSanitario();
+        return view('sanitarios.list', ['tituloModulo' => 'UsuariosXXXXx', 'aSanitarios' => $sanitarios]);
     }
 
     /**
@@ -49,11 +50,12 @@ class SanitariosController extends Controller
     public function getAllSanitario (){
         $sanitarios =   Sanitario::all();
 
-         foreach ($sanitarios as $sanitario) {
+      /*   foreach ($sanitarios as $sanitario) {
              echo $sanitario->id." - ".$sanitario->sNombre."<br/>";
-         }
-        echo json_encode($sanitarios);
-         dd($sanitarios);
+         }*/
+       // return json_encode($sanitarios);
+        return $sanitarios;
+       //  dd($sanitarios);
 
         // return view('sanitarios.lista', ['users' => $users]);
     }
