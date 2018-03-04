@@ -18,8 +18,14 @@ class SanitariosController extends Controller
     }
 
     public function index(){
+       // $listaUsuario = DB::table('sanitarios')
+       //     ->select( $this->getAllSanitario());
+        //dd($rows);
+       // return Datatables::of($listaUsuario)->make(true);
+
+       /* dd($rows);
         $sanitarios = $this->getAllSanitario();
-        return view('sanitarios.list', ['tituloModulo' => 'UsuariosXXXXx', 'aSanitarios' => $sanitarios]);
+        return view('sanitarios.list', ['tituloModulo' => 'UsuariosXXXXx', 'aSanitarios' => $sanitarios]);*/
     }
 
     /**
