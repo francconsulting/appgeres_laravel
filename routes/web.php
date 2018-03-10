@@ -24,15 +24,18 @@ Route::group(['middleware' => 'auth'], function () {
 
 //agregado el grupo para que acceda al login directamente
 Route::group(['middleware' => ['auth','web']], function () {
+
+
     Route::auth();
     //Route::get('/home', 'HomeController@index');
-
-
 
     Route::get('/PersonalSanitario', 'Sanitarios\SanitariosController@index');
 
     Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
+
     Route::get('/sanitarios', 'Sanitarios\SanitariosController@getAllSanitario');
+    Route::post('/sanitarios', 'Sanitarios\SanitariosController@postAllSanitario');
+
     Route::get('/todos', 'Sanitarios\SanitariosController@todos');
     Route::get('/new', 'Sanitarios\SanitariosController@postSanitario');
 
@@ -54,6 +57,18 @@ Route::group(['middleware' => ['auth','web']], function () {
         return "Cache limpiada";
     });
 });
+
+Route::get('/logon', function(){
+    if(Auth::check()){
+
+       // return 'Logado';
+        return 'Administrador'.Auth::user();
+    }else{
+        //return Redirect('/login');
+        return 'invitado: '.Auth::guest()."    ".Auth::user();
+    }
+
+}); //.Auth::check();
 
 //Route::get('/home', 'HomeController@index');
 

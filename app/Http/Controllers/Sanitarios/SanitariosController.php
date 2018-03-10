@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\Model\Sanitario;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+
 
 class SanitariosController extends Controller
 {
@@ -23,9 +25,8 @@ class SanitariosController extends Controller
         //dd($rows);
        // return Datatables::of($listaUsuario)->make(true);
 
-       /* dd($rows);
         $sanitarios = $this->getAllSanitario();
-        return view('sanitarios.list', ['tituloModulo' => 'UsuariosXXXXx', 'aSanitarios' => $sanitarios]);*/
+        return view('sanitarios.list', ['tituloModulo' => 'UsuariosXXXXx', 'aSanitarios' => $sanitarios]);
     }
 
     /**
@@ -55,17 +56,26 @@ class SanitariosController extends Controller
     }*/
     public function getAllSanitario (){
         $sanitarios =   Sanitario::all();
-
+        //dd(json_encode($sanitarios));
       /*   foreach ($sanitarios as $sanitario) {
              echo $sanitario->id." - ".$sanitario->sNombre."<br/>";
          }*/
        // return json_encode($sanitarios);
-        return $sanitarios;
-       //  dd($sanitarios);
+             return view('sanitarios.list', ['sanitarios' => $sanitarios]);
+
+
+       // return view('sanitarios.list');
+        //return $sanitarios;
+
+        //  dd($sanitarios);
 
         // return view('sanitarios.lista', ['users' => $users]);
     }
 
+    public function postAllSanitario(){
+        $sanitarios =   Sanitario::all();
+        return $sanitarios;
+    }
 
     /**
      * Insertar un nuevo registro

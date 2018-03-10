@@ -9,6 +9,11 @@ var inputDesactivo,
     bNewRecord;
 
 $(document).ready(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     //ruta = "." + dataDecryp(getCookie("PATHMOD")) //Obtener la ruta del modulo
 
     /**
@@ -46,6 +51,7 @@ $(document).ready(function () {
 
     //Inicializar la tabla con los datos
     Table();
+    //TableNew();
 });
 
 
@@ -95,27 +101,32 @@ var getDataEliminar = function (tbody, table) {
 
 }
 
+
+
 /**
  * Creacion de la tabla que muestra los registro
  * @constructor
  */
 
 function Table() {
+
+
     //Datatables
     tabla = $('#listaUsuario').DataTable({                      //creacion de la tabla
         // "ajax":"app/mod/user/view/modules/datos.php",
         "ajax": {
             "method": "POST",                                   //metodo de llamada al ajax
-            "url": "app/mod/user/controller/user_datos.php"        //url donde obtener los datos
-            /* "dataSrc": function(d){
-                 console.log("en AJAX:" +d.data);
-                 return d.data;
-             }*/
+            "url": "/sanitarios",       //url donde obtener los datos
+            "dataSrc": function (data) {
+                console.log("en AJAX:" + JSON.stringify(data));
+                return data;
+            }
         },
+
         //columnas a mostrar en la tabla
         "columns": [
             {
-                "data": "num",
+                "data": "sDni",
                 "width": "5%"
             },
             {
@@ -127,7 +138,7 @@ function Table() {
                 }
             },
             {
-                "data": "idUser",
+                "data": "id",
                 "width": "10%"
             },
             {
@@ -139,7 +150,7 @@ function Table() {
                 "width": "25%"
             },
             {
-                "data": "aRol",
+                "data": "sDni",
                 "width": "12%"
             },
             //crear la columna con los botones
@@ -161,26 +172,25 @@ function Table() {
         "language": idioma_espanol,
         "drawCallback": function (settings) {   //funcion llamada cada vez que se pinta la tabla
             //console.log( 'Cargando datos2....' );
-        },
-        "preDrawCallback": function (settings) {    //funcion llamada antes de la carga
-            //  console.log( 'Cargando datos....' );
-            callAjax("./app/mod/Sesion/controller/sesion_datos.php", function (result) {    //comprobar sui esta activa la sesion
-                //  console.log("precallback: "+!result.signIn);
-                if (!result.signIn) {  //control de sesion, si no esta activa la sesion se envia al indice
-                    ventanafinSesion()
-                    //  $(location).attr('href', 'index.php');
+            $.fn.dataTable.ext.errMode = 'none';
+            $(document).ajaxError(function (event, jqxhr, settings, exception) {
+                if (jqxhr.status == '500') { //lavarel emite error interno del servidor cuando no esta logado //TODO porbar metodo  en clase que controle 
+                    if (confirm("Session expired. Redirect?")) {
+                        window.location = '/login';
+                    }
                 }
             });
         },
+        "preDrawCallback": function (setting) {    //funcion llamada antes de la carga
+        },
         "initComplete": function (setting, data) {        //funcion llamada al finalizar la carga de datos
-            // console.log("datos cargados completamente..."+JSON.stringify(data));
+            //  console.log("datos cargados completamente..."+JSON.stringify(data));
         }
     });
     //Añadir las funcionalidades a los boton de ver, modificar y eliminar
     getDataView("#listaUsuario tbody", tabla);
     getDataUpdate("#listaUsuario tbody", tabla);
     getDataEliminar("#listaUsuario tbody", tabla);
-
 }
 
 //Definir los mensajes mostrados en español
@@ -216,16 +226,12 @@ var idioma_espanol = {
  */
 function borrar(datos) {
     param = {
-        'idUser': datos.idUser,
+        'idUser': datos.id,
         'accion': 'del'
     }
-    callAjax("./app/mod/Sesion/controller/sesion_datos.php", function (result) {    //comprobar sui esta activa la sesion
-        //  console.log("precallback: "+!result.signIn);
-        if (!result.signIn) {  //control de sesion, si no esta activa la sesion se envia al indice
-            ventanafinSesion()
-        } else {
+            console.log(datos.id);
             ventanaModal();
-            $(".modal-title").html("Borrar usuario");                       //añadir titulo a ventana modal
+            /*$(".modal-title").html("Borrar usuario");                       //añadir titulo a ventana modal
             $(".modal-title").parent("div").addClass('alert alert-error');  //añadir la clase
             //añadir el contenido
             $("#contenidoModal").html("Debes confirmar la eliminacion del usuario, <strong>" + datos.sNombre + " " + datos.sApellidos + "</strong>");
@@ -249,9 +255,9 @@ function borrar(datos) {
                     }
                     , param, "POST", "json");
 
-            });
-        }
-    });
+            });*/
+
+
 
 }
 

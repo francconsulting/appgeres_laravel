@@ -1,15 +1,20 @@
 @extends('layouts.app')
 
+
 @section('htmlheader_title')
     geres
 @endsection
 
+
+
 @section('contentheader_title')
-    "en el header" {{$tituloModulo}}
-    {{$aSanitarios}}
+    "en el header" {{--$tituloModulo--}}
+    {{--$aSanitarios--}}
+
 @endsection
 
 @section('main-content')
+
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="text-left">
@@ -36,7 +41,19 @@
                     <th></th>
                 </tr>
                 </thead>
+                <tbody>
+                @foreach($sanitarios as $item)
+                    <tr class="item{{$item->id}}">
+                        <td></td>
+                        <td>{{$item->id}}</td>
+                        <td>{{$item->sNombre}}</td>
+                        <td>{{$item->sApellidos}}</td>
+                        <td>{{$item->sDni}}</td>
+                    </tr>
+                @endforeach
+                </tbody>
             </table>
+
         </div>
     </div>
     <div class="row">
@@ -48,5 +65,7 @@
             </div>
         </div>
     </div>
+    @include('layouts.modal')
 @stop
+
 
