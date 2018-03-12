@@ -14,6 +14,7 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     //ruta = "." + dataDecryp(getCookie("PATHMOD")) //Obtener la ruta del modulo
 
     /**
@@ -37,16 +38,9 @@ $(document).ready(function () {
 
     //Añadir nuevo usuario
     $("#addUser").click(function () {
-
-        callAjax('./app/mod/Sesion/controller/sesion_datos.php', function (results) {    //comprobar la sesion si esta activa
-            if (!results.signIn) {
-                ventanafinSesion()
-            } else {
-                $(".modal-title").parent("div").addClass('alert alert-success');  //añadir la clase
-                ventanaModal();
-                newProfile();
-            }
-        })
+        var param = {'_token': $('meta[name="_token"]').attr('content')}
+         ventanaModal();
+        newProfile();
     });
 
     //Inicializar la tabla con los datos
@@ -110,13 +104,15 @@ var getDataEliminar = function (tbody, table) {
 
 function Table() {
 
-
     //Datatables
     tabla = $('#listaUsuario').DataTable({                      //creacion de la tabla
         // "ajax":"app/mod/user/view/modules/datos.php",
         "ajax": {
             "method": "POST",                                   //metodo de llamada al ajax
-            "url": "/sanitarios",       //url donde obtener los datos
+            "url": "/sanitarios/lista",       //url donde obtener los datos
+            "beforeSend" : function(xhr){
+                xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))
+            },
             "dataSrc": function (data) {
                 console.log("en AJAX:" + JSON.stringify(data));
                 return data;
@@ -134,7 +130,7 @@ function Table() {
                 "width": "5%",
                 "render": function (data, type, row) {          //mostrar una imagen en la tabla
                     //console.log("imagen " +data + " tipo: "+type + " fila: "+JSON.stringify(row));
-                    return '<img src="/geres/app/images/avatar/' + data + '" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
+                    return '<img src="/images/avatar/' + data + '" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
                 }
             },
             {
@@ -174,10 +170,10 @@ function Table() {
             //console.log( 'Cargando datos2....' );
             $.fn.dataTable.ext.errMode = 'none';
             $(document).ajaxError(function (event, jqxhr, settings, exception) {
-                if (jqxhr.status == '500') { //lavarel emite error interno del servidor cuando no esta logado //TODO porbar metodo  en clase que controle 
-                    if (confirm("Session expired. Redirect?")) {
-                        window.location = '/login';
-                    }
+                console.log(jqxhr);
+                if (jqxhr.status == '401') { //lavarel emite error interno del servidor cuando no esta logado //TODO porbar metodo  en clase que controle
+                    if( $("#btnEliminar").length){ $("#btnEliminar").remove(); }
+                    ventanafinSesion()
                 }
             });
         },
@@ -231,31 +227,28 @@ function borrar(datos) {
     }
             console.log(datos.id);
             ventanaModal();
-            /*$(".modal-title").html("Borrar usuario");                       //añadir titulo a ventana modal
+            $(".modal-title").html("Borrar usuario");                       //añadir titulo a ventana modal
             $(".modal-title").parent("div").addClass('alert alert-error');  //añadir la clase
             //añadir el contenido
             $("#contenidoModal").html("Debes confirmar la eliminacion del usuario, <strong>" + datos.sNombre + " " + datos.sApellidos + "</strong>");
             $(".modal-footer").append("<button id='btnEliminar' type='button' class='btn btn-danger'>Eliminar</button>") //añadir el boton de eliminar
 
             $("#btnEliminar").on('click', function () {           //funcionalidad del boton eliminar
-                callAjax(ruta + "/controller/user_datos.php", function (result) {       //eliminar de la tabla el id
+                callAjax("/sanitarios/borrar/"+datos.id, function (result) {       //eliminar de la tabla el id
                         console.log(result)
-                        if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
+                        if (result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                             tabla.ajax.reload(null, false);         //actualizar la tabla
                             $("#ventanaModal").modal('hide');       //ocultar la ventana modal
                             $(".modal-title").parent("div").removeClass('alert alert-error');   //quitar la clase a la ventana modal
                             $("#btnEliminar").remove();             //quitar el boton de eliminar
-                        } else if (result.signIn) {
+                        }   else  {
                             alert('No se han podido eliminar los datos');
                             $("#ventanaModal").modal('hide');
-                        } else {
-                            $("#btnEliminar").remove();
-                            ventanafinSesion()
                         }
                     }
                     , param, "POST", "json");
 
-            });*/
+            });
 
 
 
@@ -303,23 +296,23 @@ function actualizar(datos) {
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
         param['accion'] = 'update';
-        callAjax("./app/mod/User/controller/user_datos.php", function (result) {
+        callAjax("/sanitarios/nuevo", function (result) {
             //console.log(result);
-            if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
+           // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                 if ($("#fAvatar")[0].files[0] != undefined) {   //uploader para el avatar si se ha definido
                     cargarArchivo();
                 } else {
                     $("#ventanaModal").modal('hide');
                     tabla.ajax.reload(null, false);
                 }
-            } else {
+           /* } else {
                 if (result.signIn) {    //si no se actualizaron los datos y continua la sesion activa
                     alert('No se han podido actualizar los datos');
                     $("#ventanaModal").modal('hide');
                 } else {                 //si no continua la sesion activa
                     ventanafinSesion()
                 }
-            }
+            }*/
         }, param, "POST", "json");
     }
 }
@@ -331,10 +324,10 @@ function actualizar(datos) {
  */
 function newProfile() {
     bNewRecord = true;
-    $(".modal-title").parent("div").addClass('bg-light-green-active');  //añadir la clase de cabecera azul
+    $(".modal-title").parent("div").addClass('bg-olive');  //añadir la clase de cabecera verde
     $(".modal-title").html("Añadir nuevo usuario");
-    return callAjax(ruta + "/view/profile.php", function (result) {
 
+    return callAjax("/sanitarios/nuevo", function (result) {
             $("#contenidoModal").html(result);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
 
@@ -359,7 +352,7 @@ function newProfile() {
             $(document).on('change', '#fAvatar', previewFile)  //previsualizar el avatar cuando se cambie
 
         }, null,
-        "POST",
+        "GET",
         "HTML");
 
 }

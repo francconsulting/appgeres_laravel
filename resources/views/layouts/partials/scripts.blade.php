@@ -3,8 +3,8 @@
 <script src="{{ url ('js/appgeres/JQuery-3_2_1.js') }}" type="text/javascript"></script>
 <script src="{{ url ('js/appgeres/common.js') }}" type="text/javascript"></script>
 <script src="{{ url ('js/appgeres/func_async.js') }}" type="text/javascript"></script>
-<script src="{{ url ('js/appgeres/personalsanitario/personalsanitario.js') }}" type="text/javascript"></script>
 
+<script src="{{ url ('js/appgeres/personalsanitario/personalsanitario.js') }}" type="text/javascript"></script>
 
 
 <!-- JQuery and bootstrap are required by Laravel 5.3 in resources/assets/js/bootstrap.js-->
@@ -21,3 +21,6 @@
 <link href="{{url('plugins/dataTables.bootstrap.css')}}" rel="stylesheet">
 
 
+<link href="{{url('css/appgeres/common.css')}}" rel="stylesheet">
+
+<script src="{{ url ('js/appgeres/bsValidator/bootstrapValidator.min.js') }}" type="text/javascript"></script>

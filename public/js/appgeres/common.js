@@ -91,13 +91,13 @@ function ventanaModal() {
 function ventanafinSesion() {
     ventanaModal();
     $(".modal-title").html("Información de Sesion");                       //añadir titulo a ventana modal
-    $(".modal-title").parent("div").removeClass('bg-light-blue-active ');  //añadir la clase
+    $(".modal-title").parent("div").removeClass('bg-light-blue-active bg-olive alert alert-error');  //eliminar las clases
     $(".modal-title").parent("div").addClass('alert alert-warning ');  //añadir la clase
     $("#btnCerrar").removeClass('btn-default')
     $("#btnCerrar").addClass('btn-warning')
     $("#contenidoModal").html("Su sesión ha caducado. Deberá logarse de nuevo.");
     $("#btnCerrar, button.close").on('click', function () {
-            $(location).attr('href', 'index.php');
+            $(location).attr('href', '/');
     });
 }
 

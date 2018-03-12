@@ -40,6 +40,7 @@
                     <th>Rol</th>
                     <th></th>
                 </tr>
+                {{csrf_field()}}
                 </thead>
                 <tbody>
                 @foreach($sanitarios as $item)

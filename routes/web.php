@@ -33,14 +33,16 @@ Route::group(['middleware' => ['auth','web']], function () {
 
     Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
 
-    Route::get('/sanitarios', 'Sanitarios\SanitariosController@getAllSanitario');
-    Route::post('/sanitarios', 'Sanitarios\SanitariosController@postAllSanitario');
+    Route::get('/sanitarios/lista', 'Sanitarios\SanitariosController@getAllSanitario');
+    Route::post('/sanitarios/lista', 'Sanitarios\SanitariosController@postAllSanitario');
 
     Route::get('/todos', 'Sanitarios\SanitariosController@todos');
-    Route::get('/new', 'Sanitarios\SanitariosController@postSanitario');
 
-    Route::delete('/borrar/{id}', 'Sanitarios\SanitariosController@deleteSoft');
-    Route::get('/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');
+    Route::get('/sanitarios/nuevo', 'Sanitarios\SanitariosController@nuevoSanitario');
+    Route::post('/sanitarios/nuevo', 'Sanitarios\SanitariosController@postSanitario');
+
+    Route::post('/sanitarios/borrar/{id}', 'Sanitarios\SanitariosController@deleteSoft');
+    Route::get('/sanitarios/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');
     Route::get('/deleteAll', 'Sanitarios\SanitariosController@deleteAllHard');
 
 
@@ -62,13 +64,13 @@ Route::get('/logon', function(){
     if(Auth::check()){
 
        // return 'Logado';
-        return 'Administrador'.Auth::user();
+      //  return 'Administrador'.Auth::user();
     }else{
         //return Redirect('/login');
-        return 'invitado: '.Auth::guest()."    ".Auth::user();
+      //  return 'invitado: '.Auth::guest()."    ".Auth::user();
     }
 
-}); //.Auth::check();
+})->middleware('is_check'); //.Auth::check();
 
 //Route::get('/home', 'HomeController@index');
 
