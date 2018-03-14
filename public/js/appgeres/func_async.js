@@ -10,18 +10,19 @@
  * @param tipo          Metodo por el que seran enviado los datos (GET o POST)
  * @param tipoDato      Tipo de datos que seran recibidos del servidor (xml, html, json, text, script, jsonp)
  */
-function callAjax(url,doneFuncion,parametros,tipo,tipoDato) {
+function callAjax(url,doneFuncion,parametros,tipo,tipoDato, async) {
        //console.log(parametros);
     parametros = parametros || "";  //si no hay parametros se pone por defecto una cadena vacia
     tipo = tipo || "POST";          //si no se indica el tipo se pone por defecto POST
     tipoDato = tipoDato || "json";  //si no se indica el tipo de datos por defecto se pone json
+    async =  async ||  true;
  return $.ajax({
         url: url,
         type: tipo,
-        cache: false,
+        cache: true,
         dataType: tipoDato,
         data: parametros,       //parametros que se le pasan al hacer la peticion
-        async: true, //[bool que indica sincronía/asincronia]
+        async: async, //[bool que indica sincronía/asincronia]
         beforeSend: function (result) {         //antes de enviar la peticion
             $("#procesando").html("Procesando, espere por favor...");       //mostramos un mensaje al usuario
            $("#procesando").clearQueue().fadeIn();     //mostramos el mensaje con efecto y eliminando de la cola los elementos no procesados aun
@@ -32,7 +33,7 @@ function callAjax(url,doneFuncion,parametros,tipo,tipoDato) {
     })
         .done(function(result){  //cuando se ejecuta la peticion de forma correcta
             doneFuncion(result) //hacemos la llamada a la funcion calback pasada por parametros para utilizar los datos recuperados
-        /*    $("#procesando").fadeOut(1000, function(){
+            /*    $("#procesando").fadeOut(1000, function(){
                 $("#mensaje").addClass("ok").text("proceso realizado con exito").clearQueue().fadeIn("fast").fadeOut(3000); //mostrar mensaje de ok
             });*/
         })
