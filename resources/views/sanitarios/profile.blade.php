@@ -336,7 +336,7 @@
                                 <label for="sPassword" class="col-sm-2 control-label">Password</label>
 
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="sPassword" name="sPassword" placeholder="password">
+                                    <input type="password" class="form-control" id="sPassword" name="sPassword" placeholder="password" value="1Aa@aaaaa">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -383,7 +383,7 @@
                                         Administrador
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="checkbox" name="aRolAux" value="Sup">
+                                        <input type="checkbox" name="aRolAux" value="Sup" checked>
                                         Supervisor
                                     </label>
                                     <label class="radio-inline">
@@ -401,7 +401,7 @@
                                         <span>subir imagen...</span>
                                         <input type="file" class="form-control" id="fAvatar" name="fAvatar" onchange="previewFile()">
                                     </div>
-
+                                    <input type="file" name="archivo" id="archivo">
                                     <input type="hidden" name="sAvatar" id="sAvatar">
                                     <span id="msgfile"  >Tamaño máximo 2Mb</span>
                                 </div>

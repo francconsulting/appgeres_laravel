@@ -40,6 +40,8 @@ Route::group(['middleware' => ['auth','web']], function () {
 
     Route::get('/sanitarios/nuevo', 'Sanitarios\SanitariosController@nuevoSanitario');
     Route::post('/sanitarios/nuevo', 'Sanitarios\SanitariosController@postSanitario');
+    Route::post('/sanitarios/update/{id}', 'Sanitarios\SanitariosController@putSanitario');
+    Route::post('/sanitarios/avatar', 'Sanitarios\SanitariosController@putAvatar');
 
     Route::post('/sanitarios/borrar/{id}', 'Sanitarios\SanitariosController@deleteSoft');
     Route::get('/sanitarios/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');

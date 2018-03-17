@@ -62,7 +62,10 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-
+        'avatar' => [
+            'driver' => 'local',
+            'root' => public_path().'/images/avatar'
+        ]
     ],
 
 ];

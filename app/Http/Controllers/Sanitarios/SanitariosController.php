@@ -10,6 +10,11 @@ use App\Http\Models\Sanitario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
+use App\Fileentry;
+use App\Http\Requests;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Response;
 
 class SanitariosController extends Controller
 {
@@ -170,22 +175,39 @@ class SanitariosController extends Controller
      */
     public function putSanitario($id, Request $request)
     {
+try{
         $sanitario = Sanitario::find($id);
-        $sanitario->sDni = $request->sDni;
-        $sanitario->sNombre = 'Franc2';
-        $sanitario->sApellidos = 'br vñ';
-        $sanitario->cGenero = 'H';
-        $sanitario->sEmail = 'email@email.com';
-        $sanitario->sTelefono1 = '666666666';
-        $sanitario->sTelefono2 = '655555555';
-        $sanitario->sDireccion = 'direccion';
-        $sanitario->sCodigoPostal = '12521';
+        $sanitario->sDni = '28495114t';
+        $sanitario->sNombre = $request->sNombre;
+        $sanitario->sApellidos = $request->sApellidos;
+        $sanitario->sAvatar = $request->sAvatar;
+        $sanitario->cGenero = $request->cGenero;
+        $sanitario->sEmail = $request->sEmail;
+        $sanitario->sTelefono1 = $request->sTelefono1;
+        $sanitario->sTelefono2 = $request->sTelefono2;
+        $sanitario->sDireccion = $request->sDireccion;
+        $sanitario->sCodigoPostal = $request->sCodigoPostal;
         $sanitario->idU = Auth::user()->id;
+        $sanitario->dtU = date('Y-m-d H:i:s');
         $sanitario->cActivo = 'Si';
         $sanitario->cBorrado = 'No';
 
+
         $sanitario->save();
-        return "registro actualizado";
+        return response()->json(['exito' => true], 200);
+    } catch (\Exception $e) {
+    echo $e->getMessage();
+return response()->json(['exito' => false], 404);
+}
+    }
+
+    public function putAvatar(Request $request){
+        //dd($request->allFiles());
+        if ($request->file('fAvatar')=== null){
+            $file = "";
+        }else {
+            $file = $request->file('fAvatar')->store('/images/avatar');
+        }
     }
 
     /**

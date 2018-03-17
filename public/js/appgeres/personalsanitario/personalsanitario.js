@@ -271,6 +271,7 @@ function ver(datos) {
  * @param datos Objeto con las propiedades a actualizar
  */
 function actualizar(datos) {
+    console.log('aqui', datos);
     if(datos==undefined) {
         datos = [];
     }
@@ -296,11 +297,12 @@ function actualizar(datos) {
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
         param['accion'] = 'update';
-        callAjax("/sanitarios/nuevo", function (result) {
+        callAjax("/sanitarios/update/"+datos.id, function (result) {
             //console.log(result);
            // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                 if ($("#fAvatar")[0].files[0] != undefined) {   //uploader para el avatar si se ha definido
-                    cargarArchivo();
+                     cargarArchivo();
+                    console.log('aquiiiii')
                 } else {
                     $("#ventanaModal").modal('hide');
                     tabla.ajax.reload(null, false);
@@ -420,7 +422,9 @@ function getDatos(datos) {
     ventanaModal();     //abrir ventana modal
     //$("#contenidoModal").html(datos);
     $("#contenidoModal").html(JSON.stringify(datos));
-    return callAjax("/sanitarios/nuevo", function (result) {
+
+
+    return callAjax("/sanitarios/nuevo/", function (result) {
 
             $("#contenidoModal").html(result);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
@@ -486,6 +490,7 @@ function getDatos(datos) {
             $("form input").attr("disabled", inputDesactivo);  //habilitar o desabilitar los campos del formulario
 
             //almacenar-actualizar los valores del rol en un array segun se marquen o desmarquen
+            var arrayRol = [];
             $("[name=aRolAux]:checkbox").on('change', function () {
                 arrayRol = checkboxToArray($(this), arrayRol)
                 $("#aRol").val(arrayRol)
@@ -738,7 +743,7 @@ function cargarArchivo() {
 
 
             console.log(formData);
-            uploadAjax('./app/mod/User/controller/user_datos.php', function (result) {
+            uploadAjax('/sanitarios/avatar', function (result) {
                 // alert('fin');
                 // console.log(result.exito);
                 /* var dataImg = result;
