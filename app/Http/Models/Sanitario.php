@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sanitario extends Model
+
 {
     use SoftDeletes;    //activar el borrado logico
 
