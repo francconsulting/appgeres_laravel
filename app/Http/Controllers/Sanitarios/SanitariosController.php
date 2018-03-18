@@ -180,7 +180,7 @@ try{
         $sanitario->sDni = '28495114t';
         $sanitario->sNombre = $request->sNombre;
         $sanitario->sApellidos = $request->sApellidos;
-        $sanitario->sAvatar = $request->sAvatar;
+        $sanitario->sAvatar = $request->id.substr($request->sAvatar, -4);
         $sanitario->cGenero = $request->cGenero;
         $sanitario->sEmail = $request->sEmail;
         $sanitario->sTelefono1 = $request->sTelefono1;
@@ -203,10 +203,19 @@ return response()->json(['exito' => false], 404);
 
     public function putAvatar(Request $request){
         //dd($request->allFiles());
-        if ($request->file('fAvatar')=== null){
-            $file = "";
-        }else {
-            $file = $request->file('fAvatar')->store('/images/avatar');
+
+        $nombreArchivo = $request->file('fAvatar')->getClientOriginalName();
+        $extension =  $request->file('fAvatar')->getClientOriginalExtension();
+        try {
+            if ($request->file('fAvatar') === null) {
+                $file = "";
+            } else {
+                $file = $request->file('fAvatar')->storeAs('/public', $request->idRegistro.".".$extension);
+            }
+            return response()->json(['exito' => true], 200);
+        }catch(\Exception $e){
+            echo $e->getMessage();
+            return response()->json(['exito' => false], 404);
         }
     }
 

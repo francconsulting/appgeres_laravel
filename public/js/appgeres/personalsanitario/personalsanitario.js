@@ -130,7 +130,7 @@ function Table() {
                 "width": "5%",
                 "render": function (data, type, row) {          //mostrar una imagen en la tabla
                     //console.log("imagen " +data + " tipo: "+type + " fila: "+JSON.stringify(row));
-                    return '<img src="/images/avatar/' + data + '" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
+                    return '<img src="/images/avatar_user/'+data+'" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
                 }
             },
             {
@@ -367,7 +367,7 @@ function newProfile() {
 function avatarDefault() {
     var avatar = 'avatar_m1.svg';
     $("#cGeneroM").prop('checked', true);
-    $("#avatar").attr("src", "./app/images/avatar/" + avatar);
+    $("#avatar").attr("src", "/images/avatar_user/" + avatar);
     $("#avatar").width(100);
     $("#avatar").height(100);
     $("#sAvatar").val(avatar)
@@ -391,7 +391,7 @@ function toggleAvatar() {
                 } else {
                     avatar = 'avatar_h1.svg'
                 }
-                $("#avatar").attr("src", "./app/images/avatar/" + avatar);  //establecer la imagen del avatar
+                $("#avatar").attr("src", "/images/avatar_user/" + avatar);  //establecer la imagen del avatar
             }
             $("#avatar").width(100);
             $("#avatar").height(100);
@@ -448,7 +448,7 @@ function getDatos(datos) {
             $("#avatar").height(100);
             $("#sAvatar").val(avatar);
             $("#cGenero").val(genero);
-            $("#idUser").val(datos.idUser);
+            $("#idUser").val(datos.id);
             $("#sNombre").val(datos.sNombre);
             $("#sApellidos").val(datos.sApellidos);
 
@@ -740,9 +740,8 @@ function cargarArchivo() {
 
             var formData = new FormData(document.getElementById('profile')); //crear un nuevo formulario recuperndo el formulario pasado por parametros
             formData.append('accion', 'upload'); //añadir al campo accion  el valor upload
+            formData.append('idRegistro', document.getElementById('profile')['idUser'].value) //añadir el id del registro
 
-
-            console.log(formData);
             uploadAjax('/sanitarios/avatar', function (result) {
                 // alert('fin');
                 // console.log(result.exito);
