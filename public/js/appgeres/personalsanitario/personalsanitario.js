@@ -296,11 +296,13 @@ function actualizar(datos) {
     //console.log(param);
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
+        bNewRecord ? url = '/sanitarios/nuevo' : url = "/sanitarios/update/"+datos.id;
         param['accion'] = 'update';
-        callAjax("/sanitarios/update/"+datos.id, function (result) {
-            //console.log(result);
+        callAjax(url, function (result) {
+            console.log(result);
            // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                 if ($("#fAvatar")[0].files[0] != undefined) {   //uploader para el avatar si se ha definido
+                   if(bNewRecord ) { $("#idUser").val(result.last_insert_id); }
                      cargarArchivo();
                     console.log('aquiiiii')
                 } else {

@@ -401,7 +401,7 @@
                                         <span>subir imagen...</span>
                                         <input type="file" class="form-control" id="fAvatar" name="fAvatar" onchange="previewFile()">
                                     </div>
-                                    <input type="hidden" name="sAvatar" id="sAvatar">
+                                    <input type="hiddenn" name="sAvatar" id="sAvatar">
                                     <span id="msgfile"  >Tamaño máximo 2Mb</span>
                                 </div>
                             </div>

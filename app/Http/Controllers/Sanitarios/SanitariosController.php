@@ -99,12 +99,20 @@ class SanitariosController extends Controller
      */
     public function postSanitario(Request $request)
     {
+        $sanitario = $this->postAllSanitario();
+        $ultimo_id =$sanitario->last()->id;
+
+        if ($request->sAvatar == 'avatar_m1.svg' || $request->sAvatar == 'avatar_h1.svg'){
+            $avatar = $request->sAvatar;
+        }else{
+            $avatar = ($ultimo_id + 1).substr($request->sAvatar,-4);
+         }
         try {
             $sanitario = new Sanitario();
             $sanitario->sDni = '28495114t';
             $sanitario->sNombre = $request->sNombre;
             $sanitario->sApellidos = $request->sApellidos;
-            $sanitario->sAvatar = $request->sAvatar;
+            $sanitario->sAvatar = $avatar;
             $sanitario->cGenero = $request->cGenero;
             $sanitario->sEmail = $request->sEmail;
             $sanitario->sTelefono1 = $request->sTelefono1;
@@ -118,10 +126,10 @@ class SanitariosController extends Controller
 
             $sanitario->save();
 
-            return response()->json(['exito' => true], 200);
+            return response()->json(['exito' => true, 'last_insert_id' => $sanitario->id], 200);
         } catch (\Exception $e) {
             //echo $e->getMessage();
-            return response()->json(['exito' => false], 404);
+            return response()->json(['exitos' => false], 404);
         }
 
     }
@@ -210,7 +218,7 @@ return response()->json(['exito' => false], 404);
             if ($request->file('fAvatar') === null) {
                 $file = "";
             } else {
-                $file = $request->file('fAvatar')->storeAs('/public', $request->idRegistro.".".$extension);
+                $file = $request->file('fAvatar')->storeAs('/images/avatar', $request->idRegistro.".".$extension);
             }
             return response()->json(['exito' => true], 200);
         }catch(\Exception $e){
