@@ -59,6 +59,7 @@ var getDataView = function (tbody, table) {
         var datos = table.row($(this).parents("tr")).data();    //captura de datos de la fila
         $(".modal-title").html("Visualizar datos del usuario");
         inputDesactivo = true;
+
         ver(datos);
     });
 
@@ -167,7 +168,7 @@ function Table() {
         "deferRender": true,
         "language": idioma_espanol,
         "drawCallback": function (settings) {   //funcion llamada cada vez que se pinta la tabla
-            //console.log( 'Cargando datos2....' );
+            console.log( 'Cargando datos2....' );
             $.fn.dataTable.ext.errMode = 'none';
             $(document).ajaxError(function (event, jqxhr, settings, exception) {
                 console.log(jqxhr);
@@ -178,9 +179,10 @@ function Table() {
             });
         },
         "preDrawCallback": function (setting) {    //funcion llamada antes de la carga
+            console.log("antes de cargar");
         },
         "initComplete": function (setting, data) {        //funcion llamada al finalizar la carga de datos
-            //  console.log("datos cargados completamente..."+JSON.stringify(data));
+              console.log("datos cargados completamente..."+JSON.stringify(data));
         }
     });
     //Añadir las funcionalidades a los boton de ver, modificar y eliminar
