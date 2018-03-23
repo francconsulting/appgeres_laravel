@@ -43,15 +43,15 @@
                 {{csrf_field()}}
                 </thead>
                 <tbody>
-                @foreach($sanitarios as $item)
-                    <tr class="item{{$item->id}}">
+               {{-- @foreach($sanitarios as $item)    --}}
+                    <tr class="item{{--$item->id--}}">
                         <td></td>
-                        <td>{{$item->id}}</td>
-                        <td>{{$item->sNombre}}</td>
-                        <td>{{$item->sApellidos}}</td>
-                        <td>{{$item->sDni}}</td>
+                        <td>{{--$item->id--}}</td>
+                        <td>{{--$item->sNombre--}}</td>
+                        <td>{{--$item->sApellidos--}}</td>
+                        <td>{{--$item->sDni--}}</td>
                     </tr>
-                @endforeach
+              {{--  @endforeach  --}}
                 </tbody>
             </table>
 

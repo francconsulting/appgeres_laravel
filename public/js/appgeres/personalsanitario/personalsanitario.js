@@ -59,8 +59,11 @@ var getDataView = function (tbody, table) {
         var datos = table.row($(this).parents("tr")).data();    //captura de datos de la fila
         $(".modal-title").html("Visualizar datos del usuario");
         inputDesactivo = true;
+        //ver(datos);
+        bNewRecord = false;
 
-        ver(datos);
+        getDatos(datos);
+
     });
 
 }
@@ -423,13 +426,10 @@ function getDatos(datos) {
             //Cargar con Ajax el contenido HTML en la ventana modal
 
     $(".modal-title").parent("div").addClass('bg-light-blue-active');  //añadir la clase de cabecera azul
-    ventanaModal();     //abrir ventana modal
-    //$("#contenidoModal").html(datos);
-    $("#contenidoModal").html(JSON.stringify(datos));
-
 
     return callAjax("/sanitarios/nuevo/", function (result) {
-
+        // var html = JSON.parse(result)
+       // console.log(html.html);
             $("#contenidoModal").html(result);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
 
@@ -447,7 +447,7 @@ function getDatos(datos) {
             } else {
                 avatar = datos.sAvatar;
             }
-            $("#avatar").attr("src", "./app/images/avatar/" + avatar);
+            $("#avatar").attr("src", "/images/avatar_user/" + avatar);
             $("#avatar").width(100);
             $("#avatar").height(100);
             $("#sAvatar").val(avatar);
@@ -501,14 +501,13 @@ function getDatos(datos) {
             })
 
 
-
+            ventanaModal();     //abrir ventana modal
             toggleAvatar();  //canbiar la imagen del avatar
             bvValidarForm(datos);  //comprobaciones de validacion del formulario
-
         }, null,
         "GET",
         "HTML",
-        false);
+        true);
 
         //}
    // })

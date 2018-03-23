@@ -65,25 +65,18 @@ class SanitariosController extends Controller
     public function nuevoSanitario()
     {
         return view('sanitarios.profile');
+        //return response()->json(array('html' =>view('sanitarios.profile')->render()));
+
+       // return (String) view('sanitarios.profile');
     }
 
     public function getAllSanitario()
     {
-        $sanitarios = Sanitario::all();
-        //dd(json_encode($sanitarios));
-        /*   foreach ($sanitarios as $sanitario) {
-               echo $sanitario->id." - ".$sanitario->sNombre."<br/>";
-           }*/
-        // return json_encode($sanitarios);
-        return view('sanitarios.list', ['sanitarios' => $sanitarios]);
 
+        return view('sanitarios.list');
+        //$sanitarios = Sanitario::all();
+        //return view('sanitarios.list', ['sanitarios' => $sanitarios]);
 
-        // return view('sanitarios.list');
-        //return $sanitarios;
-
-        //  dd($sanitarios);
-
-        // return view('sanitarios.lista', ['users' => $users]);
     }
 
     public function postAllSanitario()

@@ -30,8 +30,12 @@ function callAjax(url,doneFuncion,parametros,tipo,tipoDato, async) {
         /*success:  function (result) {
            // $("#procesando").fadeOut(1000);     //cuando se realiza la peticion se oculta el mensaje con un efecto
         }*/
+        complete: function (result){
+         console.log("completado..");
+        }
     })
         .done(function(result){  //cuando se ejecuta la peticion de forma correcta
+            console.log("done...");
             doneFuncion(result) //hacemos la llamada a la funcion calback pasada por parametros para utilizar los datos recuperados
             /*    $("#procesando").fadeOut(1000, function(){
                 $("#mensaje").addClass("ok").text("proceso realizado con exito").clearQueue().fadeIn("fast").fadeOut(3000); //mostrar mensaje de ok
