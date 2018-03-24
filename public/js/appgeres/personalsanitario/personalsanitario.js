@@ -6,7 +6,7 @@
 var inputDesactivo,
     tabla,
     ruta,
-    bNewRecord;
+    bNewRecord, miform;
 
 $(document).ready(function () {
     $.ajaxSetup({
@@ -25,6 +25,7 @@ $(document).ready(function () {
         $(".modal-title").parent("div").removeClass('bg-light-blue-active');  //eliminar la clase de cabecera azul
         $(".modal-title").parent("div").removeClass('alert alert-success');  //eliminar la clase
         $("#btnEliminar").remove();         //quitar el boton eliminar
+
     });
 
 
@@ -43,9 +44,15 @@ $(document).ready(function () {
         newProfile();
     });
 
-    //Inicializar la tabla con los datos
-    Table();
+
     //TableNew();
+    callAjax("/sanitarios/nuevo", function (result) {
+
+        return formulario = result.html;
+    }, null, "GET")
+    //Inicializar la tabla con los datos
+     Table();
+
 });
 
 
@@ -61,7 +68,6 @@ var getDataView = function (tbody, table) {
         inputDesactivo = true;
         //ver(datos);
         bNewRecord = false;
-
         getDatos(datos);
 
     });
@@ -118,7 +124,7 @@ function Table() {
                 xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))
             },
             "dataSrc": function (data) {
-                console.log("en AJAX:" + JSON.stringify(data));
+               // console.log("en AJAX:" + JSON.stringify(data));
                 return data;
             }
         },
@@ -185,7 +191,8 @@ function Table() {
             console.log("antes de cargar");
         },
         "initComplete": function (setting, data) {        //funcion llamada al finalizar la carga de datos
-              console.log("datos cargados completamente..."+JSON.stringify(data));
+            //  console.log("datos cargados completamente..."+JSON.stringify(data));
+            console.log("datos cargados completamente...");
         }
     });
     //Añadir las funcionalidades a los boton de ver, modificar y eliminar
@@ -276,7 +283,7 @@ function ver(datos) {
  * @param datos Objeto con las propiedades a actualizar
  */
 function actualizar(datos) {
-    console.log('aqui', datos);
+    console.log('aqiiiiiiii');
     if(datos==undefined) {
         datos = [];
     }
@@ -297,7 +304,6 @@ function actualizar(datos) {
         param[item] = nuevosDatos[item];        //guardar los valores en un Objeto
 
     }
-
     //console.log(param);
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
@@ -322,6 +328,8 @@ function actualizar(datos) {
                     ventanafinSesion()
                 }
             }*/
+           console.log("------------>"+$('#profile')[0]);
+            $('#profile')[0].reset()
         }, param, "POST", "json");
     }
 }
@@ -415,22 +423,27 @@ function toggleAvatar() {
  * @param datos Valores de la fila elegida
  * @returns {String} Contenido HTML a mostrar en la ventana modal
  */
+var formulario
 function getDatos(datos) {
     //callAjax('./app/mod/Sesion/controller/sesion_datos.php', function (result) {
     //console.log(datos);
+
        /* if (!result.signIn) {
             ventanafinSesion()
         } else {*/
           //  $(".modal-title").parent("div").addClass('bg-light-blue-active');  //añadir la clase de cabecera azul
-           // ventanaModal();     //abrir ventana modal
+            ventanaModal();     //abrir ventana modal
             //Cargar con Ajax el contenido HTML en la ventana modal
-
     $(".modal-title").parent("div").addClass('bg-light-blue-active');  //añadir la clase de cabecera azul
 
-    return callAjax("/sanitarios/nuevo/", function (result) {
+
+        $("#contenidoModal").html(formulario);
+
+  //  return callAjax("/sanitarios/nuevo/", function (result) {
         // var html = JSON.parse(result)
        // console.log(html.html);
-            $("#contenidoModal").html(result);              //cargar el HTML en el div
+
+          //  $("#contenidoModal").html(result);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
 
             //Cargar los datos en el formualrio
@@ -500,14 +513,16 @@ function getDatos(datos) {
                 $("#aRol").val(arrayRol)
             })
 
-
-            ventanaModal();     //abrir ventana modal
+//            ventanaModal();     //abrir ventana modal
             toggleAvatar();  //canbiar la imagen del avatar
+
+
             bvValidarForm(datos);  //comprobaciones de validacion del formulario
-        }, null,
-        "GET",
-        "HTML",
-        true);
+
+  //      }, null,
+  //      "GET",
+  //      "HTML",
+ //       true);
 
         //}
    // })
@@ -521,6 +536,8 @@ function getDatos(datos) {
  * @param datos
  */
 function bvValidarForm(datos) {
+    console.log($("#profile").bootstrapValidator());
+    console.log(datos);
     $("#profile").bootstrapValidator({
         message: 'Valor errorneo',
         feedbackIcons: {
@@ -601,25 +618,29 @@ function bvValidarForm(datos) {
         }
     })
         .on('status.field.bv', function(e, data){
+            console.log('en status field')
             $(".control-label").css('color','#000');
         })
         .on('error.form.bv', function (e) {
             console.log(e);
+            console.log('en error form')
             $("#btnActualizar").attr('disabled', false)
         })
         .on('success.form.bv', function (e) {  //actualizacion de datos y estados de campos del formularios con el envio correcto
-            e.preventDefault();
+           // e.preventDefault();
+            console.log('en success form')
             $("#cGenero").val( $("input[name='cGeneroAux']:checked").val() );
             $("#fAvatar").hide();
             $("#fAvatar").closest('.fileinput-button').attr('disabled', true);
 
-            $("#btnActualizar").attr('disabled', 'disabled')
+            $("#btnActualizar").attr('disabled', 'disabled');
             mostrarSpinner();
 
-            actualizar(datos);
+            //actualizar(datos);
         })
         .on('success.field.bv', function (e, data) {     //acciones cuando success, por campo
             //console.log( data.field);
+            console.log('en success field')
             if ($("#sCodigoPostal").val() == '' && data.field == "sCodigoPostal") {  //acciones para el codigo postal
                 data.element
                     .closest('.form-group') //obtener el campo padre
@@ -636,6 +657,7 @@ function bvValidarForm(datos) {
 
         })
         .on('error.field.bv', function (e, data) {     //acciones cuando existe error, por campo
+            console.log('en error field')
             if (data.field == 'cGeneroAux') {     //acciones para el campo Sexo
                 moverIconoBv('cGeneroAux');
             }
@@ -644,6 +666,7 @@ function bvValidarForm(datos) {
             }
         })
         .on('error.validator.bv', function (e, data) { //SOLO UN MENSAJE POR ERROR
+            console.log('en error validatos')
             // $(e.target)    --> The field element
             // data.bv        --> The BootstrapValidator instance
             // data.field     --> The field name
