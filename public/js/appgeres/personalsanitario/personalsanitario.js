@@ -6,7 +6,8 @@
 var inputDesactivo,
     tabla,
     ruta,
-    bNewRecord;
+    bNewRecord,
+    formulario;
 
 $(document).ready(function () {
     $.ajaxSetup({
@@ -42,6 +43,13 @@ $(document).ready(function () {
          ventanaModal();
         newProfile();
     });
+
+    //cargar el formulario.
+    callAjax("/sanitarios/nuevo", function (result) {
+        console.log(result)
+        return formulario = result.html;
+    }, null, "GET")
+
 
     //Inicializar la tabla con los datos
     Table();
@@ -118,7 +126,7 @@ function Table() {
                 xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))
             },
             "dataSrc": function (data) {
-                console.log("en AJAX:" + JSON.stringify(data));
+            //    console.log("en AJAX:" + JSON.stringify(data));
                 return data;
             }
         },
@@ -185,7 +193,8 @@ function Table() {
             console.log("antes de cargar");
         },
         "initComplete": function (setting, data) {        //funcion llamada al finalizar la carga de datos
-              console.log("datos cargados completamente..."+JSON.stringify(data));
+            //console.log("datos cargados completamente..."+JSON.stringify(data));
+            console.log("datos cargados completamente...");
         }
     });
     //Añadir las funcionalidades a los boton de ver, modificar y eliminar
@@ -427,10 +436,10 @@ function getDatos(datos) {
 
     $(".modal-title").parent("div").addClass('bg-light-blue-active');  //añadir la clase de cabecera azul
 
-    return callAjax("/sanitarios/nuevo/", function (result) {
+ //   return callAjax("/sanitarios/nuevo/", function (result) {
         // var html = JSON.parse(result)
        // console.log(html.html);
-            $("#contenidoModal").html(result);              //cargar el HTML en el div
+            $("#contenidoModal").html(formulario);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
 
             //Cargar los datos en el formualrio
@@ -504,10 +513,10 @@ function getDatos(datos) {
             ventanaModal();     //abrir ventana modal
             toggleAvatar();  //canbiar la imagen del avatar
             bvValidarForm(datos);  //comprobaciones de validacion del formulario
-        }, null,
-        "GET",
-        "HTML",
-        true);
+ //       }, null,
+ //       "GET",
+ //       "HTML",
+ //       true);
 
         //}
    // })
