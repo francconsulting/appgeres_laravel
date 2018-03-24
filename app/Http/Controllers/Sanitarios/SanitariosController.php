@@ -66,8 +66,6 @@ class SanitariosController extends Controller
     {
         //return view('sanitarios.profile');
         return response()->json(array('html' =>view('sanitarios.profile')->render()));
-
-       // return (String) view('sanitarios.profile');
     }
 
     public function getAllSanitario()

@@ -345,8 +345,7 @@ function newProfile() {
     $(".modal-title").parent("div").addClass('bg-olive');  //añadir la clase de cabecera verde
     $(".modal-title").html("Añadir nuevo usuario");
 
-    return callAjax("/sanitarios/nuevo", function (result) {
-            $("#contenidoModal").html(result);              //cargar el HTML en el div
+            $("#contenidoModal").html(formulario);              //cargar el HTML en el div
             noSubmit('profile');   //evitar el envio del formulario
 
             $("#sNombre").keyup(function () {
@@ -369,9 +368,7 @@ function newProfile() {
 
             $(document).on('change', '#fAvatar', previewFile)  //previsualizar el avatar cuando se cambie
 
-        }, null,
-        "GET",
-        "HTML");
+
 
 }
 
@@ -381,7 +378,7 @@ function newProfile() {
  * al formulario del perfil
  */
 function avatarDefault() {
-    var avatar = 'avatar_m1.svg';
+    var avatar = 'avatar_m1.jpg';
     $("#cGeneroM").prop('checked', true);
     $("#avatar").attr("src", "/images/avatar_user/" + avatar);
     $("#avatar").width(100);
@@ -401,11 +398,11 @@ function toggleAvatar() {
             $("#cGenero").val($(this).val());   //guardar el valor en el formulario para usar en el POST
 
             //Si el avatar actual es alguno de los por defecto
-            if (avatar.search('avatar_m1.svg') >= 0 || avatar.search('avatar_h1.svg') >= 0) {
+            if (avatar.search('avatar_m1.jpg') >= 0 || avatar.search('avatar_h1.jpg') >= 0) {
                 if ($(this).val() != 'H') {
-                    avatar = 'avatar_m1.svg'
+                    avatar = 'avatar_m1.jpg'
                 } else {
-                    avatar = 'avatar_h1.svg'
+                    avatar = 'avatar_h1.jpg'
                 }
                 $("#avatar").attr("src", "/images/avatar_user/" + avatar);  //establecer la imagen del avatar
             }
