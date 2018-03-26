@@ -5,19 +5,20 @@
 //definicion de variables
 var inputDesactivo,
     tabla,
-    ruta,
     bNewRecord,
     formulario;
 
+var contador = 0;
+
 $(document).ready(function () {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    //ruta = "." + dataDecryp(getCookie("PATHMOD")) //Obtener la ruta del modulo
-
+    /*********** Añadir eventos a botones *************/
     /**
      * Funcionalidad en el boton cerrar cuando se hace click
      */
@@ -25,6 +26,7 @@ $(document).ready(function () {
         $(".modal-title").parent("div").removeClass('alert alert-error');   //eliminar la clase alert
         $(".modal-title").parent("div").removeClass('bg-light-blue-active');  //eliminar la clase de cabecera azul
         $(".modal-title").parent("div").removeClass('alert alert-success');  //eliminar la clase
+        $(".modal-title").parent("div").removeClass('alert bg-olive');  //eliminar la clase
         $("#btnEliminar").remove();         //quitar el boton eliminar
     });
 
@@ -32,6 +34,7 @@ $(document).ready(function () {
     $("#btnGuardar").hide(); //ocultar el boton guardar que esta en la ventana modal
 
     var param = {'existe' :0};
+
     //Actualizar la tabla de registro con el boton Actualizar Tabla
     $('#idRecarga').click(function () {
         tabla.ajax.reload();
@@ -41,19 +44,22 @@ $(document).ready(function () {
     $("#addUser").click(function () {
         var param = {'_token': $('meta[name="_token"]').attr('content')}
          ventanaModal();
+        bNewRecord = true;
         newProfile();
     });
 
-    //cargar el formulario.
+    /************fin añadir eventos a botones ********/
+
+        //Inicializar la tabla con los datos
+        Table();
+
+    //Precarga del formulario para añadir, ver o moduficar registros
     callAjax("/sanitarios/nuevo", function (result) {
         console.log(result)
-        return formulario = result.html;
+        return formulario = result.html;      //almacerar el formulario en una variable
     }, null, "GET")
 
 
-    //Inicializar la tabla con los datos
-    Table();
-    //TableNew();
 });
 
 
@@ -67,11 +73,8 @@ var getDataView = function (tbody, table) {
         var datos = table.row($(this).parents("tr")).data();    //captura de datos de la fila
         $(".modal-title").html("Visualizar datos del usuario");
         inputDesactivo = true;
-        //ver(datos);
         bNewRecord = false;
-
         getDatos(datos);
-
     });
 
 }
@@ -84,13 +87,11 @@ var getDataView = function (tbody, table) {
 var getDataUpdate = function (tbody, table) {
     $(tbody).on('click', "button.editar", function () {
         var datos = table.row($(this).parents("tr")).data();
-        //num_index(table);                 //TODO ELiminiar
-        // tabla.ajax.reload(null, false);   //TODO Eliminar
         $(".modal-title").html("Modificar datos del usuario");
         inputDesactivo = false;
-        ver(datos);
+        bNewRecord = false;
+        getDatos(datos);
     });
-
 }
 
 /**
@@ -101,36 +102,34 @@ var getDataUpdate = function (tbody, table) {
 var getDataEliminar = function (tbody, table) {
     $(tbody).on('click', "button.eliminar", function () {
         var datos = table.row($(this).parents("tr")).data();
-        //TODO poner un alert de confirmacion
         borrar(datos);
     });
-
 }
 
 
 
 /**
  * Creacion de la tabla que muestra los registro
+ * Usamos el pluging Datatable
  * @constructor
  */
 
 function Table() {
-
+  if(contador<1){
+    contador = 1;
     //Datatables
     tabla = $('#listaUsuario').DataTable({                      //creacion de la tabla
-        // "ajax":"app/mod/user/view/modules/datos.php",
         "ajax": {
             "method": "POST",                                   //metodo de llamada al ajax
-            "url": "/sanitarios/lista",       //url donde obtener los datos
-            "beforeSend" : function(xhr){
-                xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))
+            "url": "/sanitarios/lista",                         //url donde obtener los datos
+            "beforeSend": function (xhr) {
+                xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))  //añadimos el token antes de la llamada a Ajax
             },
             "dataSrc": function (data) {
-            //    console.log("en AJAX:" + JSON.stringify(data));
-                return data;
+                //    console.log("en AJAX:" + JSON.stringify(data));
+                return data;                                    //devolucion de los datos obtenidos
             }
         },
-
         //columnas a mostrar en la tabla
         "columns": [
             {
@@ -141,8 +140,7 @@ function Table() {
                 "data": "sAvatar",
                 "width": "5%",
                 "render": function (data, type, row) {          //mostrar una imagen en la tabla
-                    //console.log("imagen " +data + " tipo: "+type + " fila: "+JSON.stringify(row));
-                    return '<img src="/images/avatar_user/'+data+'" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
+                    return '<img src="/images/avatar_user/' + data + '" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
                 }
             },
             {
@@ -177,26 +175,32 @@ function Table() {
         "autoWidth": false,         //ancho automatico
         "stateSave": true,          //guardar la pagina
         "deferRender": true,
+        "serverSide": false,
         "language": idioma_espanol,
-        "drawCallback": function (settings) {   //funcion llamada cada vez que se pinta la tabla
-            console.log( 'Cargando datos2....' );
-            $.fn.dataTable.ext.errMode = 'none';
-            $(document).ajaxError(function (event, jqxhr, settings, exception) {
-                console.log(jqxhr);
-                if (jqxhr.status == '401') { //lavarel emite error interno del servidor cuando no esta logado //TODO porbar metodo  en clase que controle
-                    if( $("#btnEliminar").length){ $("#btnEliminar").remove(); }
-                    ventanafinSesion()
-                }
-            });
-        },
         "preDrawCallback": function (setting) {    //funcion llamada antes de la carga
             console.log("antes de cargar");
         },
+        "drawCallback": function (settings) {   //funcion llamada cada vez que se pinta la tabla
+            console.log('Cargando datos2....');
+            $("#ventanaModal").modal('hide');
+            $.fn.dataTable.ext.errMode = 'none';
+            $(document).ajaxError(function (event, jqxhr, settings, exception) {
+                console.log(jqxhr);
+                if (jqxhr.status == '401') {                    //lavarel emite error interno del servidor cuando no esta logado o activo el usuario //TODO porbar metodo  en clase que controle
+                    if ($("#btnEliminar").length) {
+                        $("#btnEliminar").remove();
+                    }    //borrar el boton eliminar
+                    ventanafinSesion()          //mostrar ventana con informacion para fin de sesion .
+                }
+            });
+        },
         "initComplete": function (setting, data) {        //funcion llamada al finalizar la carga de datos
-            //console.log("datos cargados completamente..."+JSON.stringify(data));
+            // console.log("datos cargados completamente..."+JSON.stringify(data));
             console.log("datos cargados completamente...");
+
         }
     });
+}
     //Añadir las funcionalidades a los boton de ver, modificar y eliminar
     getDataView("#listaUsuario tbody", tabla);
     getDataUpdate("#listaUsuario tbody", tabla);
@@ -216,7 +220,7 @@ var idioma_espanol = {
     "sSearch": "Buscar:",
     "sUrl": "",
     "sInfoThousands": ",",
-    "sLoadingRecords": "Cargando...",
+    "sLoadingRecords": " &nbsp; ",             //texto a mostrar en la carga preva
     "oPaginate": {
         "sFirst": "Primero",
         "sLast": "Último",
@@ -237,7 +241,8 @@ var idioma_espanol = {
 function borrar(datos) {
     param = {
         'idUser': datos.id,
-        'accion': 'del'
+        'accion': 'del',
+        '_token': $("input[name=_token]").val()
     }
             console.log(datos.id);
             ventanaModal();
@@ -264,20 +269,9 @@ function borrar(datos) {
 
             });
 
-
-
 }
 
 
-/**
- * Capturar los datos para mostrarlos en
- * el formulario en una ventana modal
- * @param datos  Objeto con las propiedades a mostrar
- */
-function ver(datos) {
-    bNewRecord = false
-    getDatos(datos);    //pasar los datos al formulario
-}
 
 
 /**
@@ -320,7 +314,12 @@ function actualizar(datos) {
                      cargarArchivo();
                     console.log('aquiiiii')
                 } else {
-                    $("#ventanaModal").modal('hide');
+                   // $("#ventanaModal").modal('hide');
+                    $(".modal-title").parent("div").removeClass('alert alert-error');   //eliminar la clase alert
+                    $(".modal-title").parent("div").removeClass('bg-light-blue-active');  //eliminar la clase de cabecera azul
+                    $(".modal-title").parent("div").removeClass('alert alert-success');  //eliminar la clase
+                    $(".modal-title").parent("div").removeClass('alert bg-olive');  //eliminar la clase
+
                     tabla.ajax.reload(null, false);
                 }
            /* } else {

@@ -44,8 +44,8 @@ Route::group(['middleware' => ['auth','web']], function () {
     Route::post('/sanitarios/avatar', 'Sanitarios\SanitariosController@putAvatar');
 
     Route::post('/sanitarios/borrar/{id}', 'Sanitarios\SanitariosController@deleteSoft');
-    Route::get('/sanitarios/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');
-    Route::get('/deleteAll', 'Sanitarios\SanitariosController@deleteAllHard');
+    Route::post('/sanitarios/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');
+    Route::post('/deleteAll', 'Sanitarios\SanitariosController@deleteAllHard');
 
 
     Route::get('/', function () {
