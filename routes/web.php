@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth','web']], function () {
 
     Route::auth();
     //Route::get('/home', 'HomeController@index');
-
+/*
     Route::get('/PersonalSanitario', 'Sanitarios\SanitariosController@index');
 
     Route::get('/sanitario/{id}', 'Sanitarios\SanitariosController@getSanitario');
@@ -46,7 +46,11 @@ Route::group(['middleware' => ['auth','web']], function () {
     Route::post('/sanitarios/borrar', 'Sanitarios\SanitariosController@deleteSoft');
     Route::post('/sanitarios/delete/{id}', 'Sanitarios\SanitariosController@deleteHard');
     Route::post('/deleteAll', 'Sanitarios\SanitariosController@deleteAllHard');
+*/
 
+    Route::post('/sanitario/lista', 'Sanitarios\SanitariosController@postAllSanitario');
+    Route::post('/sanitario/avatar', 'Sanitarios\SanitariosController@postAvatar');
+    Route::resource('sanitario', 'Sanitarios\SanitariosController');
 
     Route::get('/', function () {
         return view('welcome');
@@ -60,6 +64,8 @@ Route::group(['middleware' => ['auth','web']], function () {
         //return redirect()->action('Sanitarios\SanitariosController@getPrueba');
         return "Cache limpiada";
     });
+
+
 });
 
 Route::get('/logon', function(){

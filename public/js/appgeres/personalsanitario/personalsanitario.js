@@ -55,7 +55,7 @@ $(document).ready(function () {
         Table();
     $("#addUser, #idRecarga").attr('disabled', true)
     //Precarga del formulario para añadir, ver o moduficar registros
-    callAjax("/sanitarios/nuevo", function (result) {
+    callAjax("/sanitario/create", function (result) {
         console.log(result);
         $("#addUser, #idRecarga").attr('disabled', false)
         return formulario = result.html;      //almacerar el formulario en una variable
@@ -123,7 +123,7 @@ function Table() {
     tabla = $('#listaUsuario').DataTable({                      //creacion de la tabla
         "ajax": {
             "method": "POST",                                   //metodo de llamada al ajax
-            "url": "/sanitarios/lista",                         //url donde obtener los datos
+            "url": "/sanitario/lista",                         //url donde obtener los datos
             "beforeSend": function (xhr) {
                 xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))  //añadimos el token antes de la llamada a Ajax
             },
@@ -312,8 +312,10 @@ function actualizar(datos) {
     //console.log(param);
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
-        bNewRecord ? url = '/sanitarios/nuevo' : url = "/sanitarios/update/"+datos.id;
+        bNewRecord ? url = '/sanitario' : url = "/sanitarios/update/"+datos.id;
         param['accion'] = 'update';
+        param['_method'] = 'POST';
+        param['_token'] = $('input[name=_token]').val();
         callAjax(url, function (result) {
             console.log(result);
            // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
@@ -763,7 +765,7 @@ function cargarArchivo() {
             formData.append('accion', 'upload'); //añadir al campo accion  el valor upload
             formData.append('idRegistro', document.getElementById('profile')['idUser'].value) //añadir el id del registro
 
-            uploadAjax('/sanitarios/avatar', function (result) {
+            uploadAjax('/sanitario/avatar', function (result) {
                 // alert('fin');
                 // console.log(result.exito);
                 /* var dataImg = result;
