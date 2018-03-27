@@ -50,12 +50,14 @@ $(document).ready(function () {
 
     /************fin añadir eventos a botones ********/
 
+
         //Inicializar la tabla con los datos
         Table();
-
+    $("#addUser, #idRecarga").attr('disabled', true)
     //Precarga del formulario para añadir, ver o moduficar registros
     callAjax("/sanitarios/nuevo", function (result) {
-        console.log(result)
+        console.log(result);
+        $("#addUser, #idRecarga").attr('disabled', false)
         return formulario = result.html;      //almacerar el formulario en una variable
     }, null, "GET")
 
@@ -183,6 +185,14 @@ function Table() {
         "drawCallback": function (settings) {   //funcion llamada cada vez que se pinta la tabla
             console.log('Cargando datos2....');
             $("#ventanaModal").modal('hide');
+
+            //si tiene la clase error, se elimino un elemento de la tabla y hay que restaurar la ventana modal
+            if($(".modal-title").parent("div").hasClass('alert alert-error')){
+                $(".modal-title").parent("div").removeClass('alert alert-error');   //quitar la clase a la ventana modal
+                $("#btnEliminar").remove();                                         //quitar el boton de eliminar
+            }
+
+
             $.fn.dataTable.ext.errMode = 'none';
             $(document).ajaxError(function (event, jqxhr, settings, exception) {
                 console.log(jqxhr);
@@ -253,13 +263,11 @@ function borrar(datos) {
             $(".modal-footer").append("<button id='btnEliminar' type='button' class='btn btn-danger'>Eliminar</button>") //añadir el boton de eliminar
 
             $("#btnEliminar").on('click', function () {           //funcionalidad del boton eliminar
-                callAjax("/sanitarios/borrar/"+datos.id, function (result) {       //eliminar de la tabla el id
+                $("#btnEliminar").attr('disabled', 'disabled');
+                callAjax("/sanitarios/borrar", function (result) {       //eliminar de la tabla el id
                         console.log(result)
                         if (result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                             tabla.ajax.reload(null, false);         //actualizar la tabla
-                            $("#ventanaModal").modal('hide');       //ocultar la ventana modal
-                            $(".modal-title").parent("div").removeClass('alert alert-error');   //quitar la clase a la ventana modal
-                            $("#btnEliminar").remove();             //quitar el boton de eliminar
                         }   else  {
                             alert('No se han podido eliminar los datos');
                             $("#ventanaModal").modal('hide');
@@ -436,6 +444,10 @@ function getDatos(datos) {
         // var html = JSON.parse(result)
        // console.log(html.html);
             $("#contenidoModal").html(formulario);              //cargar el HTML en el div
+
+            $("#btnActualizar").parent('div').prepend('<div id="loaderImage">')  //posicion del spinner de carga de datos
+            loadSpinner('loaderImage');
+
             noSubmit('profile');   //evitar el envio del formulario
 
             //Cargar los datos en el formualrio
@@ -619,8 +631,9 @@ function bvValidarForm(datos) {
             $("#fAvatar").closest('.fileinput-button').attr('disabled', true);
 
             $("#btnActualizar").attr('disabled', 'disabled')
-            mostrarSpinner();
 
+           // $("#btnActualizar").parent('div').prepend('<div id="loaderImage">')
+            mostrarSpinner();
             actualizar(datos);
         })
         .on('success.field.bv', function (e, data) {     //acciones cuando success, por campo

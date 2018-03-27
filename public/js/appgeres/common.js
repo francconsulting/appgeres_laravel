@@ -81,7 +81,8 @@ function checkboxToArray(element, array) {
  *  estilo boostrap
  */
 function ventanaModal() {
-    $("#ventanaModal").modal({backdrop: "static"});
+    $("#ventanaModal").data('bs.modal', null);  //evitar perder la referencia previa al backdrop y limpiar el bs modal data
+    $("#ventanaModal").modal({backdrop: 'static', keyboard: false}); //anular tecla de escape o click fuera de la ventana
 }
 
 /**
@@ -137,14 +138,22 @@ function getCookie(nombre) {
     return sValorCook;
 }
 
+
+/**
+ * cargar el spiner de actualizacion de datos
+ */
+function loadSpinner(idLoaderImage, textoSpinner){
+    textoSpinner = textoSpinner || "Actualizando datos ...."
+    $("#"+idLoaderImage).hide()
+    $("#"+idLoaderImage).html("<img id='spinner'> <span>" + textoSpinner +"</span>")
+    $('#spinner').attr('src', "/images/images_geres/spinner.gif" )
+    $('#spinner').css({'position':'absolute','z-index': '9999', 'margin-top':'0%', 'margin-left':'20%'})
+    $("#loaderImage span").css({'position':'absolute','z-index': '9999', 'margin-top':'1%', 'margin-left':'30%', 'line-height': '30px', 'font-weight': 'bold','color': '#1041CA'})
+}
 /**
  * Mostrar el spiner de actualizacion de datos
  */
 function mostrarSpinner(){
-    $("#loaderImage").html("<img id='spinner'> <span>Actualizando datos....</span>")
-    $('#spinner').attr('src', "./app/images/spinner/ajax-loader.gif" )
-    $('#spinner').css({'position':'absolute','z-index': '9999', 'margin-top':'30%', 'margin-left':'40%'})
-    $("#loaderImage span").css({'position':'absolute','z-index': '9999', 'margin-top':'30%', 'margin-left':'45%', 'line-height': '30px', 'font-weight': 'bold','color': '#1041CA'})
     $("#loaderImage").clearQueue().fadeIn();     //mostramos el mensaje con efecto y eliminando de la cola los elementos no procesados aun
 }
 

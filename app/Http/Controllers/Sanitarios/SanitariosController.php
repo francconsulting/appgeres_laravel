@@ -130,10 +130,10 @@ class SanitariosController extends Controller
      * @param $id
      * @return string
      */
-    public function deleteSoft($id)
+    public function deleteSoft(Request $request)
     {
         try {
-            $sanitario = Sanitario::find($id);
+            $sanitario = Sanitario::find($request->idUser);
             $sanitario->cBorrado = 'Si';
             $sanitario->save(); //actualizar el campo borrado
             $sanitario->delete(); //actualiza el timestamp de borrado
