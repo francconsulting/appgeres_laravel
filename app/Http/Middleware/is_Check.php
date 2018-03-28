@@ -32,9 +32,6 @@ class is_Check
                 return redirect()->guest('login');
             }
         }
-
-
-
         return $response;
     }
 }

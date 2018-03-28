@@ -52,6 +52,8 @@ Route::group(['middleware' => ['auth','web']], function () {
     Route::post('/sanitario/avatar', 'Sanitarios\SanitariosController@postAvatar');
     Route::resource('sanitario', 'Sanitarios\SanitariosController');
 
+
+
     Route::get('/', function () {
         return view('welcome');
     });

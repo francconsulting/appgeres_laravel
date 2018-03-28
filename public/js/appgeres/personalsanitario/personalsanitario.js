@@ -252,7 +252,8 @@ function borrar(datos) {
     param = {
         'idUser': datos.id,
         'accion': 'del',
-        '_token': $("input[name=_token]").val()
+        '_token': $("input[name=_token]").val(),
+        '_method': 'DELETE'
     }
             console.log(datos.id);
             ventanaModal();
@@ -264,7 +265,7 @@ function borrar(datos) {
 
             $("#btnEliminar").on('click', function () {           //funcionalidad del boton eliminar
                 $("#btnEliminar").attr('disabled', 'disabled');
-                callAjax("/sanitarios/borrar", function (result) {       //eliminar de la tabla el id
+                callAjax("/sanitario/"+datos.id, function (result) {       //eliminar de la tabla el id
                         console.log(result)
                         if (result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
                             tabla.ajax.reload(null, false);         //actualizar la tabla
@@ -312,10 +313,16 @@ function actualizar(datos) {
     //console.log(param);
     if (bUpdate) {      //si hay cambios
         console.log(bNewRecord)
-        bNewRecord ? url = '/sanitario' : url = "/sanitarios/update/"+datos.id;
+       if ( bNewRecord ){
+            url = '/sanitario' ;
+           param['_method'] = 'POST';
+        }else{
+           url = "/sanitario/"+datos.id;
+           param['_method'] = 'PUT';
+       }
         param['accion'] = 'update';
-        param['_method'] = 'POST';
         param['_token'] = $('input[name=_token]').val();
+
         callAjax(url, function (result) {
             console.log(result);
            // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
@@ -634,7 +641,6 @@ function bvValidarForm(datos) {
 
             $("#btnActualizar").attr('disabled', 'disabled')
 
-           // $("#btnActualizar").parent('div').prepend('<div id="loaderImage">')
             mostrarSpinner();
             actualizar(datos);
         })

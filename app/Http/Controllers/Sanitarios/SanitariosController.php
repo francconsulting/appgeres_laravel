@@ -89,7 +89,7 @@ class SanitariosController extends Controller
      */
     public function show(Sanitario $sanitario)
     {
-        //
+        //TODO no se usa porque mostramos los datos desde JS sin accesso a datos
     }
 
     /**
@@ -100,7 +100,7 @@ class SanitariosController extends Controller
      */
     public function edit(Sanitario $sanitario)
     {
-        //
+        //TODO no se usa porque mostramos los datos desde JS sin accesso a datos
     }
 
     /**
@@ -110,9 +110,31 @@ class SanitariosController extends Controller
      * @param  \App\Http\Models\Sanitario  $sanitario
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sanitario $sanitario)
+    public function update(Request $request, $id)
     {
-        //
+        try{
+            $sanitario = Sanitario::find($id);
+            $sanitario->sDni = '28495114t';
+            $sanitario->sNombre = $request->sNombre;
+            $sanitario->sApellidos = $request->sApellidos;
+            $sanitario->sAvatar = $request->id.substr($request->sAvatar, -4);
+            $sanitario->cGenero = $request->cGenero;
+            $sanitario->sEmail = $request->sEmail;
+            $sanitario->sTelefono1 = $request->sTelefono1;
+            $sanitario->sTelefono2 = $request->sTelefono2;
+            $sanitario->sDireccion = $request->sDireccion;
+            $sanitario->sCodigoPostal = $request->sCodigoPostal;
+            $sanitario->idU = Auth::user()->id;
+            $sanitario->dtU = date('Y-m-d H:i:s');
+            $sanitario->cActivo = 'Si';
+            $sanitario->cBorrado = 'No';
+
+            $sanitario->save();
+            return response()->json(['exito' => true], 200);
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return response()->json(['exito' => false], 404);
+        }
     }
 
     /**
@@ -120,10 +142,23 @@ class SanitariosController extends Controller
      *
      * @param  \App\Http\Models\Sanitario  $sanitario
      * @return \Illuminate\Http\Response
+     *
+     * Se hace uso del deleteSoft
      */
-    public function destroy(Sanitario $sanitario)
+    public function destroy($id)
     {
-        //
+        try {
+            $sanitario = Sanitario::find($id);
+            $sanitario->cBorrado = 'Si';
+            $sanitario->save(); //actualizar el campo borrado
+            $sanitario->delete(); //actualiza el timestamp de borrado
+
+            return response()->json(['exito' => true], 200);
+
+        } catch (\Exception $e) {
+            //echo $e->getMessage();
+            return response()->json(['exito' => false], 404);
+        }
     }
 
     /**
@@ -155,4 +190,16 @@ class SanitariosController extends Controller
             return response()->json(['exito' => false], 422);
         }
     }
+
+    public function deleteHard($id)
+    {
+        try {
+            Sanitario::withTrashed()->where('id', $id)->forceDelete();
+            return response()->json(['exito' => true], 200);
+        } catch (\Exception $e) {
+            //echo $e->getMessage();
+            return response()->json(['exito' => false], 404);
+        }
+    }
+
 }
