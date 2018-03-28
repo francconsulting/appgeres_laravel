@@ -124,9 +124,11 @@ function Table() {
         "ajax": {
             "method": "POST",                                   //metodo de llamada al ajax
             "url": "/sanitario/lista",                         //url donde obtener los datos
+            //"headers": { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') },
             "beforeSend": function (xhr) {
                 xhr.setRequestHeader("_token", $('meta[name="csrf-token"]').attr('content'))  //añadimos el token antes de la llamada a Ajax
             },
+            "data": {'_token' : $('meta[name="csrf-token"]').attr('content')},
             "dataSrc": function (data) {
                 //    console.log("en AJAX:" + JSON.stringify(data));
                 return data;                                    //devolucion de los datos obtenidos
@@ -196,7 +198,7 @@ function Table() {
             $.fn.dataTable.ext.errMode = 'none';
             $(document).ajaxError(function (event, jqxhr, settings, exception) {
                 console.log(jqxhr);
-                if (jqxhr.status == '401') {                    //lavarel emite error interno del servidor cuando no esta logado o activo el usuario //TODO porbar metodo  en clase que controle
+                if (jqxhr.status == '401' ||  jqxhr.status == '500' ) {                    //lavarel emite error interno del servidor cuando no esta logado o activo el usuario //TODO porbar metodo  en clase que controle
                     if ($("#btnEliminar").length) {
                         $("#btnEliminar").remove();
                     }    //borrar el boton eliminar
@@ -322,7 +324,7 @@ function actualizar(datos) {
        }
         param['accion'] = 'update';
         param['_token'] = $('input[name=_token]').val();
-
+console.log($("#fAvatar")[0].files[0]);
         callAjax(url, function (result) {
             console.log(result);
            // if (result.signIn && result.exito) {        //si la sesion esta activa y se ha actualizado correctamente
@@ -770,7 +772,6 @@ function cargarArchivo() {
             var formData = new FormData(document.getElementById('profile')); //crear un nuevo formulario recuperndo el formulario pasado por parametros
             formData.append('accion', 'upload'); //añadir al campo accion  el valor upload
             formData.append('idRegistro', document.getElementById('profile')['idUser'].value) //añadir el id del registro
-
             uploadAjax('/sanitario/avatar', function (result) {
                 // alert('fin');
                 // console.log(result.exito);

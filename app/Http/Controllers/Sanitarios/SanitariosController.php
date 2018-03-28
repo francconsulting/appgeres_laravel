@@ -117,7 +117,7 @@ class SanitariosController extends Controller
             $sanitario->sDni = '28495114t';
             $sanitario->sNombre = $request->sNombre;
             $sanitario->sApellidos = $request->sApellidos;
-            $sanitario->sAvatar = $request->id.substr($request->sAvatar, -4);
+            $sanitario->sAvatar = $id.substr($request->sAvatar, -4);
             $sanitario->cGenero = $request->cGenero;
             $sanitario->sEmail = $request->sEmail;
             $sanitario->sTelefono1 = $request->sTelefono1;
@@ -178,6 +178,7 @@ class SanitariosController extends Controller
     public function postAvatar(Request $request){
         $nombreArchivo = $request->file('fAvatar')->getClientOriginalName();
         $extension =  $request->file('fAvatar')->getClientOriginalExtension();
+
         try {
             if ($request->file('fAvatar') === null) {
                 $file = "";
