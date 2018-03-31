@@ -19,5 +19,4 @@ class Sanitario extends Model
     protected $dates = ['deleted_at']; //campo para el borrado logico
 
 
-
 }

@@ -18,7 +18,6 @@
             </div>
             <div class="modal-footer">
                 <button id="btnCerrar" type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                <button id="btnGuardar" type="button" class="btn btn-primary">Guardar cambios</button>
             </div>
 
 

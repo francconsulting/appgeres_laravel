@@ -70,7 +70,9 @@ th, td{
     font-family: Verdana, Arial, sans-serif;
 }
 
-
+#auditoria{
+    color:#ccc;
+}
 /* estilo boton fileUpload */
 .fileinput-button {
     position: relative;
@@ -87,6 +89,10 @@ th, td{
     font-size: 200px !important;
     direction: ltr;
     cursor: pointer;
+}
+
+.profile-username, .text-muted {
+    color: #ccc;
 }
 
 /* Fixes for IE < 8 */

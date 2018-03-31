@@ -15,8 +15,8 @@
                 <div class="box-body box-profile">
                     <img id="avatar" class="profile-user-img img-responsive img-circle" src=""
                          alt="User profile picture">
-                    <h3 id="NombrePerfil" class="profile-username text-center">#NOMBRE#</h3>
-                    <p id="ApellidosPerfil" class="text-muted text-center">#APELLIDO#</p>
+                    <h3 id="NombrePerfil" class="profile-username text-center">[NOMBRE]</h3>
+                    <p id="ApellidosPerfil" class="text-muted text-center">[APELLIDO]</p>
                     <ul class="list-group list-group-unbordered">
                         <li class="list-group-item">
                             <b>Followers</b> <a class="pull-right">1,322</a>
@@ -60,16 +60,23 @@
         <div class="col-md-9">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li><a href="#activity" data-toggle="tab">Activity</a></li>
-                    <li><a href="#timeline" data-toggle="tab">Timeline</a></li>
-                    <li class="active"><a href="#settings" data-toggle="tab">Settings</a></li>
+                    <li class="active"><a href="#datosPersonales" data-toggle="tab">Datos Personales</a></li>
+                    <li><a href="#expedienteLaboral" data-toggle="tab">Expediente Laboral</a></li>
+                    <li><a href="#actividad" data-toggle="tab">Actividad</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="active tab-pane" id="settings">
+                    <div class="active tab-pane" id="datosPersonales">
                         <form id="profile" enctype="multipart/form-data" class="form-horizontal"
                               data-toggle="validator">
                             {{ csrf_field() }}
                             <input type="hidden" class="form-control" id="idUser">
+                            <div class="form-group">
+                                <label for="sDNI" class="col-sm-2 control-label">CIF/NIF:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control " id="sDNI" name="sDNI"
+                                           placeholder="Introduce CIF o NIF con el formato NNNNNNNNL o LNNNNNNNNL">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="sNombre" class="col-sm-2 control-label">Nombre</label>
                                 <div class="col-sm-10">
@@ -98,13 +105,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="sPassword" class="col-sm-2 control-label">Password</label>
-                                <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="sPassword" name="sPassword"
-                                           placeholder="password" value="1Aa@aaaaa">
-                                </div>
-                            </div>
+
                             <div class="form-group">
                                 <label for="sEmail" class="col-sm-2 control-label">Email</label>
                                 <div class="col-sm-10">
@@ -141,33 +142,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="aRol" class="col-sm-2 control-label">Rol</label>
-                                <div class="col-sm-10">
-                                    <input type="hidden" class="form-control" id="aRol">
-                                    <label class="radio-inline">
-                                        <input type="checkbox" name="aRolAux" value="Adm">
-                                        Administrador
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="checkbox" name="aRolAux" value="Sup" checked>
-                                        Supervisor
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="checkbox" name="aRolAux" value="Per">
-                                        Personal
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="fAvatar" class="col-sm-2 control-label">Avatar</label>
                                 <div class="col-sm-10">
                                     <div class="btn btn-success fileinput-button">
                                         <i class="glyphicon glyphicon-camera"></i>
                                         <span>subir imagen...</span>
-                                        <input type="file" class="form-control" id="fAvatar" name="fAvatar"
-                                               onchange="previewFile()">
+                                        <input type="file" class="form-control" id="fAvatar" name="fAvatar">
                                     </div>
-                                    <input type="hiddenn" name="sAvatar" id="sAvatar">
+                                    <input type="hidden" name="sAvatar" id="sAvatar">
                                     <span id="msgfile">Tamaño máximo 2Mb</span>
                                 </div>
                             </div>
@@ -179,11 +161,48 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <button id="btnActualizar" type="submit" class="btn btn-danger">Actualizar</button>
+                                    <button id="btnActualizar" type="submit" class="btn btn-primary">Actualizar</button>
                                 </div>
+                            </div>
+                            <div id="mensaje"  style="display: none">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4><i class="icon fa fa-warning"></i> Aviso!</h4>
+                                <p></p>
                             </div>
                         </form>
                         <div id="auditoria"></div>
+                    </div>
+                    <div class="tab-pane" id="expedienteLaboral">
+                        <ul class="timeline timeline-inverse">
+                        <li>
+                            <i class="fa fa-info bg-blue"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="fa fa-clock-o"></i> 20/01/2018 12:05</span>
+                                <h3 class="timeline-header"><a href="#">En Desarrollo</a> Expediente Laboral</h3>
+                                <div class="timeline-body">
+                                    Estamos trabajando para implantar el área de Expediente Laboral y
+                                    poder ofrecer todos los servicio a traves de la aplicación.
+                                </div>
+
+                            </div>
+                        </li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane" id="actividad">
+                        <ul class="timeline timeline-inverse">
+                            <li>
+                                <i class="fa fa-info bg-blue"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fa fa-clock-o"></i> 20/01/2018 12:05</span>
+                                    <h3 class="timeline-header"><a href="#">En Desarrollo</a> Actividad</h3>
+                                    <div class="timeline-body">
+                                        Estamos trabajando para implantar el área de Actividad y
+                                        poder ofrecer todos los servicio a traves de la aplicación.
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     <!-- /.tab-pane -->
                 </div>

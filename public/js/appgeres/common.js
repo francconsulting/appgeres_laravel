@@ -94,9 +94,11 @@ function ventanafinSesion() {
     $(".modal-title").html("Información de Sesion");                       //añadir titulo a ventana modal
     $(".modal-title").parent("div").removeClass('bg-light-blue-active bg-olive alert alert-error');  //eliminar las clases
     $(".modal-title").parent("div").addClass('alert alert-warning ');  //añadir la clase
-    $("#btnCerrar").removeClass('btn-default')
-    $("#btnCerrar").addClass('btn-warning')
+    $("#btnCerrar").removeClass('btn-default');
+    $("#btnCerrar, button.close").attr('disabled', false);
+    $("#btnCerrar").addClass('btn-warning');
     $("#contenidoModal").html("Su sesión ha caducado. Deberá logarse de nuevo.");
+    $("#btnCerrar, button.close").removeAttr('data-dismiss');                 //quitar attr que produce el cierre de la ventana modal
     $("#btnCerrar, button.close").on('click', function () {
             $(location).attr('href', '/');
     });
@@ -157,3 +159,172 @@ function mostrarSpinner(){
     $("#loaderImage").clearQueue().fadeIn();     //mostramos el mensaje con efecto y eliminando de la cola los elementos no procesados aun
 }
 
+/**
+ * Callback cuando se produce un status distinto de 200 en
+ * llamadas a Ajax
+ * @param jqXHR
+ */
+function cbErrorAjax(jqXHR){
+    var exito, mensaje, codStatus;
+    accion = null;
+    mensaje = null;
+    if(jqXHR.hasOwnProperty('responseJSON')){ //si existe la propiedad
+        accion = jqXHR.responseJSON.accion;
+        mensaje = jqXHR.responseJSON.mensaje;
+    }
+    codStatus = jqXHR.status;
+
+    $("#mensaje p").html(mensaje);          //rellenar el texto del mensaje
+    $("#mensaje").addClass('alert alert-warning alert-dismissible')     //añadir las clases
+    $("#mensaje").clearQueue().fadeIn('slow').delay(1500).fadeOut(3000, function(){     //efecto fadeIn->fadeOut
+            $("#mensaje").removeClass('alert alert-warning alert-dismissible')
+    });
+
+    console.log('Accion realizada : ', accion, ' mensaje: ', mensaje, ' codigo estado html: ', codStatus)
+    //$('#profile').bootstrapValidator('resetForm', true);
+}
+
+//FUNCIONALIDAD PARA LOS BOTONES VER/AÑADIR/ELIMINAR DE LOS DATATABLES
+/**
+ * Añade funcionalidad al boton ver de la tabla
+ * @param tbody id de la tabla junto con el tag tbody
+ * @param table Tabla a la que se aplica la funcionalidad
+ */
+var getDataView = function (tbody, table) {
+    $(tbody).on('click', "button.ver", function () {  //funcionalidad cuando se pulsa el boton
+        var datos = table.row($(this).parents("tr")).data();    //captura de datos de la fila
+        $(".modal-title").html("Visualizar datos del usuario");
+        inputDesactivo = true;
+        bNewRecord = false;
+        getDatos(datos);
+    });
+
+}
+
+/**
+ * Añade funcionalidad al boton modificar de la tabla
+ * @param tbody id de la tabla junto con el tag tbody
+ * @param table Tabla a la que se aplica la funcionalidad
+ */
+var getDataUpdate = function (tbody, table) {
+    $(tbody).on('click', "button.editar", function () {
+        var datos = table.row($(this).parents("tr")).data();
+        $(".modal-title").html("Modificar datos del usuario");
+        inputDesactivo = false;
+        bNewRecord = false;
+        getDatos(datos);
+    });
+}
+
+/**
+ * Añade funcionalidad al boton eliminar de la tabla
+ * @param tbody id de la tabla junto con el tag tbody
+ * @param table Tabla a la que se aplica la funcionalidad
+ */
+var getDataEliminar = function (tbody, table) {
+    $(tbody).on('click', "button.eliminar", function () {
+        var datos = table.row($(this).parents("tr")).data();
+        borrar(datos);
+    });
+}
+
+//Definir los mensajes mostrados en español en DataTables
+var idioma_espanol = {
+    "sProcessing": "Procesando...",
+    "sLengthMenu": "Mostrar _MENU_ registros",
+    "sZeroRecords": "No se encontraron resultados",
+    "sEmptyTable": "Ningún dato disponible en esta tabla",
+    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+    "sInfoPostFix": "",
+    "sSearch": "Buscar:",
+    "sUrl": "",
+    "sInfoThousands": ",",
+    "sLoadingRecords": " &nbsp; ",             //texto a mostrar en la carga preva
+    "oPaginate": {
+        "sFirst": "Primero",
+        "sLast": "Último",
+        "sNext": "Siguiente",
+        "sPrevious": "Anterior"
+    },
+    "oAria": {
+        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    }
+
+}
+
+// FIN FUNCIONALIDAD BOTONES DATATABLES
+
+/**
+ * Variables para los mensajes de validacion del formulario
+ *
+ */
+var bvNoVacio = {
+    message: 'El campo es requerido. Por favor introduce un valor.'
+}
+var bvElige = {
+    message: 'Por favor, debes elegir un valor.'
+}
+var bvSoloTexto = {
+    regexp: /^[a-zA-ZñÑ\s]+$/i,
+    message: "Por favor no estan permitido números ni caracteres especiales"
+}
+var bvSoloNumero = {
+    regexp: /^[0-9]+$/i,
+    message: "Por favor solo se permiten números"
+}
+var bvPassword = {
+    //regexp : /(?=^.{8,15}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/  , //letra May, letra min, 1 num ó 1 carct esp,
+    regexp: /(?=^.{8,15}$)((?=.*\d)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, //letra May, letra min, 1 num, 1 carct esp,
+    message: "Al menos una letra Mayúscula.<br/>Al menos una letra minúscula.<br/>Al menos un dígito.<br/>Al menos un caracter especial.<br/>No se permiten espacios en blanco"
+}
+var bvTelefono = {
+    country: 'ES',
+    message: 'El número de teléfono en %s no es un número válido.'
+}
+var bvZipCode = {
+    regexp: /^\d{5}$/,
+    message: 'Por favor, el Código Postal debe contener 5 dígitos.'
+}
+
+var bvDni = {
+    country: 'ES',
+    message: 'El CIF/NIF indicado no es correcto.'
+}
+
+
+
+/**
+ * Comprobar si es una imagen el fichero a subir
+ * @param extension Extension del archivo a cargar
+ * @returns {boolean}
+ */
+function isImage(extension) {
+    switch (extension.toLowerCase()) {
+        case 'jpg':
+        case 'gif':
+        case 'png':
+        case 'jpeg':
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+
+/**
+ * Comprueba si el peso del archivo es el permitido
+ * @param peso Peso del archivo
+ * @returns {boolean}
+ */
+function pesoImagen(peso) {
+    //console.log(peso);
+    if (peso < 2200000) { //2Mg
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -9,6 +9,10 @@ class is_Check
 {
     protected  $auth;
 
+    /**
+     * is_Check constructor.
+     * @param Guard $auth
+     */
     public function __construct(Guard $auth)
     {
         $this->auth = $auth;
@@ -34,4 +38,6 @@ class is_Check
         }
         return $response;
     }
+
+
 }

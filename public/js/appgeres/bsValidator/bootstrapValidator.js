@@ -1,5 +1,6 @@
 /*!
  * BootstrapValidator (http://bootstrapvalidator.com)
+ * http://bootstrapvalidator.votintsev.ru/
  * The best jQuery plugin to validate form fields. Designed to use with Bootstrap 3
  *
  * @version     v0.5.2, built on 2014-09-25 4:01:07 PM

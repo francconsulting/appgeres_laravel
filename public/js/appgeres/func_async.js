@@ -5,12 +5,12 @@
  * Llamada al metodo ajax para
  * hacer las peticiones y recuperar los datos
  * @param url   String con la url que se va a consultar
- * @param doneFuncion   String con la funcion callback a la que se llama despues hacer la peticion correcta
+ * @param cbDoneFuncion   String con la funcion callback a la que se llama despues hacer la peticion correcta
  * @param parametros    String con los datos que seran enviados al servidor
  * @param tipo          Metodo por el que seran enviado los datos (GET o POST)
  * @param tipoDato      Tipo de datos que seran recibidos del servidor (xml, html, json, text, script, jsonp)
  */
-function callAjax(url,doneFuncion,parametros,tipo,tipoDato, async) {
+function callAjax(url,cbDoneFuncion, cbFailFuntion ,parametros,tipo,tipoDato, async) {
        //console.log(parametros);
     parametros = parametros || "";  //si no hay parametros se pone por defecto una cadena vacia
     tipo = tipo || "POST";          //si no se indica el tipo se pone por defecto POST
@@ -31,18 +31,19 @@ function callAjax(url,doneFuncion,parametros,tipo,tipoDato, async) {
            // $("#procesando").fadeOut(1000);     //cuando se realiza la peticion se oculta el mensaje con un efecto
         }*/
         complete: function (result){
-         console.log("completado..");
+        // console.log("completado.."+ JSON.stringify(result));
         }
     })
         .done(function(result){  //cuando se ejecuta la peticion de forma correcta
-            console.log("done...");
-            doneFuncion(result) //hacemos la llamada a la funcion calback pasada por parametros para utilizar los datos recuperados
+           // console.log("done..."+ JSON.stringify(result));
+            cbDoneFuncion(result) //hacemos la llamada a la funcion calback pasada por parametros para utilizar los datos recuperados
             /*    $("#procesando").fadeOut(1000, function(){
                 $("#mensaje").addClass("ok").text("proceso realizado con exito").clearQueue().fadeIn("fast").fadeOut(3000); //mostrar mensaje de ok
             });*/
         })
-        .fail(function(jqXHR){  //en caso de que la peticion sea erronea
+        .fail(function(jqXHR, textStatus, error){  //en caso de que la peticion sea erronea
             console.log("Se ha producido un error:" + jqXHR.status+ " "+jqXHR.statusText);
+            cbFailFuntion(jqXHR);  //funcion callback en caso de error
             //$("#mensaje").addClass("error").text("Se ha producido un error:" + jqXHR.status+ " "+jqXHR.statusText); //si hay algun error en la llamada muestra un mensaje
         })
 
@@ -51,6 +52,7 @@ function callAjax(url,doneFuncion,parametros,tipo,tipoDato, async) {
         })*/
     ;
 }
+
 
 function uploadAjax(url,doneFuncion,parametros,tipo,tipoDato) {
     //console.log(parametros);
@@ -82,8 +84,7 @@ function uploadAjax(url,doneFuncion,parametros,tipo,tipoDato) {
                 });*/
         })
         .fail(function(jqXHR){  //en caso de que la peticion sea erronea
-            alert('ERROR en AJAX: '+jqXHR.status );
-            $("#mensaje").addClass("error").text("Se ha producido un error:" + jqXHR.status+ " "+jqXHR.statusText); //si hay algun error en la llamada muestra un mensaje
+            console.log("Se ha producido un error al intentar caargar el fichero:" + jqXHR.status+ " "+jqXHR.statusText);
         })
 
     /* .always(function(jqXHR){  //completada la peticion
