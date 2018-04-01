@@ -2,18 +2,14 @@
 
 
 @section('htmlheader_title')
-    - {{$modulo}}
-
+    - {{ $modulo }}
 @endsection
-
-
 
 @section('contentheader_title')
     {{ $modulo }}
 @endsection
 
 @section('main-content')
-
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="text-left">
@@ -25,7 +21,7 @@
     </div>
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">Lista Personal {{ substr($modulo,0, strlen($modulo)-1) }}</h3>
+            <h3 class="box-title">Lista de  {{ strtoupper($modulo) }}</h3>
         </div>
         <div class="box-body">
             <table id="listaUsuario" class="table table-bordered table-striped dataTable" cellpadding="3" cellspacing="2">
@@ -69,7 +65,7 @@
 @endsection
 
 @section('scripts-modulo')
-    @include('sanitarios.partials.scripts')
+    @include('residentes.partials.scripts')
 @stop
 
 

@@ -57,8 +57,10 @@ desired effect
 
     </div><!-- ./wrapper -->
 </div>
+
 @section('scripts')
     @include('layouts.partials.scripts')
+    @yield('scripts-modulo')
 @show
 
 </body>

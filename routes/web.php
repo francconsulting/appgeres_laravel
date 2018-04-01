@@ -49,8 +49,15 @@ Route::group(['middleware' => ['auth','web']], function () {
 */
 
     Route::post('/sanitario/lista', 'Sanitarios\SanitariosController@postAllSanitario');
-    Route::post('/sanitario/avatar', 'Sanitarios\SanitariosController@postAvatar');
+    Route::put('/sanitario/avatar', 'Sanitarios\SanitariosController@putAvatar');
     Route::resource('sanitario', 'Sanitarios\SanitariosController');
+
+    Route::post('/residente/lista', 'Residentes\ResidentesController@postAllResidente');
+    Route::put('/residente/avatar', 'Residentes\ResidentesController@putAvatar');
+    Route::resource('residente', 'Residentes\ResidentesController');
+
+
+
 
 
 

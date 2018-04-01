@@ -1,33 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Sanitarios;
+namespace App\Http\Controllers\Residentes;
 
-
-use App\Http\Models\Sanitario;
+Use App\Http\Models\Residente;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
-
-use App\Fileentry;
-use App\Http\Requests;
 
 use App\Http\Traits\Auditoria;
 use App\Http\Traits\UtilDb;
 
-class SanitariosController extends Controller
+class ResidentesController extends Controller
 {
     use Auditoria;
     use UtilDb;
-
     /**
-     * SanitariosController constructor.
+     * ResidentesController constructor.
      */
     public function __construct()
     {
         $this->middleware('is_check');
         $this->middleware('auth');
     }
-
 
     /**
      * Display a listing of the resource.
@@ -36,7 +29,7 @@ class SanitariosController extends Controller
      */
     public function index()
     {
-        return view('sanitarios.list', ['modulo' => 'Sanitarios']);             //muestra la vista
+        return view('residentes.list', ['modulo' => 'Residentes']);     //muestra la vista
     }
 
     /**
@@ -46,46 +39,49 @@ class SanitariosController extends Controller
      */
     public function create()
     {
-        return response()->json(array('html' => view('sanitarios.profile')->render()));     //devuelve una vista como json
+        return response()->json(array('html' => view('residentes.profile')->render()));     //devuelve una vista como json
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response            Objeto Json con el estado, el mensaje y codigo de estado HTML
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $contador = Sanitario::where('sDni', $request->sDNI)->count();          //numero de registros recuperados
+        $contador = Residente::where('sDni', $request->sDNI)->count();          //numero de registros recuperados
         if ($contador == 0) {
-            $sanitario = $this->postAllSanitario();
-            $ultimo_id = $this->getLastId($sanitario);                                        //recupera el id del ultimo registro insertado
+            $residente = $this->postAllResidente();
+
+            $ultimo_id =  $this->getLastId($residente);
+            //recupera el id del ultimo registro insertado
 
             if ($request->sAvatar == 'avatar_m1.jpg' || $request->sAvatar == 'avatar_h1.jpg') {
                 $avatar = $request->sAvatar;
             } else {
-                $avatar = ($ultimo_id + 1) . substr($request->sAvatar, -4);
+                $avatar = $request->sDNI  . substr($request->sAvatar, -4);
             }
             try {
-                $sanitario = new Sanitario();
-                $sanitario->sDni = $request->sDNI;
-                $sanitario->sNombre = $request->sNombre;
-                $sanitario->sApellidos = $request->sApellidos;
-                $sanitario->sAvatar = $avatar;
-                $sanitario->cGenero = $request->cGenero;
-                $sanitario->sEmail = $request->sEmail;
-                $sanitario->sTelefono1 = $request->sTelefono1;
-                $sanitario->sTelefono2 = $request->sTelefono2;
-                $sanitario->sDireccion = $request->sDireccion;
-                $sanitario->sCodigoPostal = $request->sCodigoPostal;
-                $this->setInsertAuditoria($sanitario);                  //settear los datos de auditoria de la tabla
+                $residente = new Residente();
+                $residente->sDni = $request->sDNI;
+                $residente->sNombre = $request->sNombre;
+                $residente->sApellidos = $request->sApellidos;
+                $residente->sAvatar = $avatar;
+                $residente->cGenero = $request->cGenero;
+                $residente->sNombreFamiliar = $request->sFamiliar;
+                $residente->sEmail = $request->sEmail;
+                $residente->sTelefono1 = $request->sTelefono1;
+                $residente->sTelefono2 = $request->sTelefono2;
+                $residente->sDireccion = $request->sDireccion;
+                $residente->sCodigoPostal = $request->sCodigoPostal;
+                $this->setInsertAuditoria($residente);                  //settear los datos de auditoria de la tabla
 
-                $sanitario->save();
+                $residente->save();
 
                 return response()->json(['accion'         => 'exito',
                                          'mensaje'        => 'Datos guardados correctamente',
-                                         'last_insert_id' => $sanitario->id
+                                         'last_insert_id' => $residente->id
                 ], 200);
             } catch (\Exception $e) {
                 //echo $e->getMessage();
@@ -96,17 +92,17 @@ class SanitariosController extends Controller
         } else {
             return response()->json(['accion' => 'error',
                                      'mensaje' => 'El DNI ya existe en otro registro'
-                ], 422);
+            ], 422);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Http\Models\Sanitario $sanitario
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Sanitario $sanitario)
+    public function show($id)
     {
         //TODO no se usa porque mostramos los datos desde JS sin accesso a datos
     }
@@ -114,10 +110,10 @@ class SanitariosController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Http\Models\Sanitario $sanitario
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sanitario $sanitario)
+    public function edit($id)
     {
         //TODO no se usa porque mostramos los datos desde JS sin accesso a datos
     }
@@ -125,40 +121,40 @@ class SanitariosController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Http\Models\Sanitario $sanitario
-     * @return \Illuminate\Http\Response                    Objeto Json con el estado, el mensaje y codigo de estado HTML
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-
-        $contador = Sanitario::where('sDni', $request->sDNI)->where('id', '<>', $id)->count();  //número de registros recuperados
+        $contador = Residente::where('sDni', $request->sDNI)->where('id', '<>', $id)->count();  //número de registros recuperados
         if ($contador == 0) {
 
             if ($request->sAvatar == 'avatar_m1.jpg' || $request->sAvatar == 'avatar_h1.jpg') {
                 $avatar = $request->sAvatar;
             } else {
-                $avatar = $id . substr($request->sAvatar, -4);
+                $avatar = $request->sDNI . substr($request->sAvatar, -4);
             }
             try {
-                $sanitario = Sanitario::find($id);
-                $sanitario->sDni = $request->sDNI;
-                $sanitario->sNombre = $request->sNombre;
-                $sanitario->sApellidos = $request->sApellidos;
-                $sanitario->sAvatar = $avatar;
-                $sanitario->cGenero = $request->cGenero;
-                $sanitario->sEmail = $request->sEmail;
-                $sanitario->sTelefono1 = $request->sTelefono1;
-                $sanitario->sTelefono2 = $request->sTelefono2;
-                $sanitario->sDireccion = $request->sDireccion;
-                $sanitario->sCodigoPostal = $request->sCodigoPostal;
+                $residente = Residente::find($id);
+                $residente->sDni = $request->sDNI;
+                $residente->sNombre = $request->sNombre;
+                $residente->sApellidos = $request->sApellidos;
+                $residente->sAvatar = $avatar;
+                $residente->cGenero = $request->cGenero;
+                $residente->sNombreFamiliar = $request->sFamiliar;
+                $residente->sEmail = $request->sEmail;
+                $residente->sTelefono1 = $request->sTelefono1;
+                $residente->sTelefono2 = $request->sTelefono2;
+                $residente->sDireccion = $request->sDireccion;
+                $residente->sCodigoPostal = $request->sCodigoPostal;
 
 
-                $sanitario->cActivo = 'Si';
-                $sanitario->cBorrado = 'No';
-                $this->setUpdateAuditoria($sanitario);
+                $residente->cActivo = 'Si';
+                $residente->cBorrado = 'No';
+                $this->setUpdateAuditoria($residente);
 
-                $sanitario->save();
+                $residente->save();
                 return response()->json(['accion' => 'exito'], 200);
             } catch (\Exception $e) {
                 //echo $e->getMessage();
@@ -173,7 +169,7 @@ class SanitariosController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Http\Models\Sanitario $sanitario
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      *
      * Se hace uso del deleteSoft. No se borra definitivamente el
@@ -182,10 +178,10 @@ class SanitariosController extends Controller
     public function destroy($id)
     {
         try {
-            $sanitario = Sanitario::find($id);
-            $sanitario->cBorrado = 'Si';
-            $sanitario->save();                     //actualizar el campo borrado
-            $sanitario->delete();                   //actualiza el timestamp de borrado
+            $residente = Residente::find($id);
+            $residente->cBorrado = 'Si';
+            $residente->save();                     //actualizar el campo borrado
+            $residente->delete();                   //actualiza el timestamp de borrado
 
             return response()->json(['accion' => 'exito'], 200);
 
@@ -195,27 +191,15 @@ class SanitariosController extends Controller
         }
     }
 
-    /********************
-     * Metodos adicionales a los que crea
-     * artisan con el comando make:controller.
-     * Estos métodos están creados manualmente.
-     *********************/
-
     /**
-     * Obtener todos los registros activos
+     * Obtener todos los registros de residentes que no esten borrados
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function postAllSanitario()
-    {
-        //   $sanitarios = Sanitario::all();
-        /*  $sanitarios = Sanitario::select('*',
-                          DB::raw('(select name from users where users.id = '.$tabla.'.idA) as idAnombre, (select name from users where users.id = '.$tabla.'.idU) as idUnombre')
-              )
-                  ->get();*/
 
-        $auditoria = $this->getAuditoria("sanitarios");              //obtener la consulta de los datos de la auditoria
-        $sanitarios = Sanitario::select('*', $auditoria)->get();   //ejecutar la consulta
-        return $sanitarios;
+    public function postAllResidente(){
+        $auditoria = $this->getAuditoria( $this->getTabla() );
+        $residentes =  Residente::select('*', $auditoria)->get();
+        return $residentes;
     }
 
     /**
@@ -232,9 +216,9 @@ class SanitariosController extends Controller
             if ($request->file('fAvatar') === null) {
                 $file = "";
             } else {
-                $file = $request->file('fAvatar')->storeAs('/images/avatar', $request->idRegistro . "." . $extension);
+                $file = $request->file('fAvatar')->storeAs('/images/avatar', $request->sDNI . "." . $extension);
             }
-            return response()->json(['accion' => 'exito'], 200);
+            return response()->json(['accion' => 'exito', 'mensaje' => 'archivo cargado correctamente'], 200);
         } catch (\Exception $e) {
             echo $e->getMessage();
             return response()->json(['accion' => 'error', 'mensaje' => 'No se ha podido cargar el archivo'], 422);
@@ -249,7 +233,7 @@ class SanitariosController extends Controller
     public function deleteHard($id)
     {
         try {
-            Sanitario::withTrashed()->where('id', $id)->forceDelete();
+            Residente::withTrashed()->where('id', $id)->forceDelete();
             return response()->json(['exito' => true,
                                      'mensaje' => 'Eliminado definitivamente el registro correctamente'
             ], 200);

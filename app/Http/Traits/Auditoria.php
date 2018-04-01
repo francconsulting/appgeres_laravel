@@ -33,7 +33,6 @@ trait Auditoria {
      * @param $model    Modelo donde se va a actualizar
      */
     public function setUpdateAuditoria($model){
-
           $model->idU = Auth::user()->id ;
           $model->dtU = date('Y-m-d H:i:s');
 
