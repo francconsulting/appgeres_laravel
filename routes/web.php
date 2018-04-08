@@ -56,7 +56,8 @@ Route::group(['middleware' => ['auth','web']], function () {
     Route::put('/residente/avatar', 'Residentes\ResidentesController@putAvatar');
     Route::resource('residente', 'Residentes\ResidentesController');
 
-
+    Route::post('/actividad/lista', 'Actividades\ActividadesController@postAllActividad');
+    Route::resource('actividad', 'Actividades\ActividadesController');
 
 
 

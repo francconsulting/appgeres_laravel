@@ -301,7 +301,7 @@ function actualizar(datos) {
 function newProfile() {
     bNewRecord = true;
     $(".modal-title").parent("div").addClass('bg-olive');                   //añadir la clase de cabecera verde
-    $(".modal-title").html("Añadir nuevo usuario");
+    $(".modal-title").html("Añadir nuevo personal");
 
             $("#contenidoModal").html(formulario);                          //cargar el HTML en el div
             noSubmit('profile');                                            //evitar el envio del formulario

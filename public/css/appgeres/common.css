@@ -69,6 +69,12 @@ th, td{
     transition: all .5s;
     font-family: Verdana, Arial, sans-serif;
 }
+#avatarActividad h1 {
+    font-weight: bold;
+    text-align: center;
+    font-size: 4em;
+    color: #8c8c8c;
+}
 
 #auditoria{
     color:#ccc;

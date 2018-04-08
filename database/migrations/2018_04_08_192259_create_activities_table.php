@@ -13,10 +13,11 @@ class CreateActivitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('actividades', function (Blueprint $table) {
             $table->increments('id');
             $table->string('sNombreActividad', 255);
             $table->longText('sDescripcionActividad');
+            $table->string('sTipoActividad');
             $table->timestamp('dtA')->nullable();
             $table->timestamp('dtU')->nullable();
             $table->string('idA', 3);
@@ -24,9 +25,8 @@ class CreateActivitiesTable extends Migration
             $table->char('cActivo', 2)->default('Si');
             $table->char('cBorrado', 2)->default('No');
 
-            $table->primary('id');
-
             $table->index(array('sNombreActividad'));
+            $table->softDeletes();
         });
     }
 
