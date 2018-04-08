@@ -13,7 +13,7 @@ $(document).ready(function () {
 
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
         }
     });
 
@@ -64,6 +64,9 @@ $(document).ready(function () {
         if(!this.value.length) return false;    //detener accion si no se ha seleccionado archivo
         previewFile();      //previsualizar el avatar cuando se cambie
     })
+
+
+
 
 });
 
@@ -259,6 +262,7 @@ function actualizar(datos) {
         }
         //param['accion'] = 'update';
         param['_token'] = $('input[name=_token]').val();    //agregar la propiedad token al objeto
+
 
         callAjax(url, function (result) {               //Callback en caso de exito
                 // console.log(result);
