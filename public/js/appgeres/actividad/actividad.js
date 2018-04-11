@@ -224,17 +224,17 @@ function borrar(datos) {
  * @param datos Objeto con las propiedades a actualizar
  */
 function actualizar(datos) {
-    // console.log('aqui', datos);
+     console.log('aqui', datos);
     if(datos==undefined) {
         datos = [];
     }
     var bUpdate = false,
-        nuevosDatos = getElementForm('#profile input'),     //capura de todos los elementos del formulario
+        nuevosDatos = getElementForm('#profile input, #profile textArea'),     //capura de todos los elementos del formulario
         param = new Object();                               //crear el objeto param
     //  console.log(nuevosDatos);     console.log(datos);
 
     for (var item  in nuevosDatos) {    //recorrer todos los elemento del formulario
-        //console.log(item+ "  "+nuevosDatos[item]+"   -> "+datos[item]);
+        console.log("item:"+item+ "  nuevoDato:"+nuevosDatos[item]+"   -> "+datos[item]);
 
         if (datos[item] == undefined) { //establecer a vacio los elementos que viajan indefinido
             datos[item] = ''
@@ -244,7 +244,7 @@ function actualizar(datos) {
         }
         param[item] = nuevosDatos[item];        //guardar los valores en las propiedades del Objeto
     }
-    //console.log(param);
+    param['sDescripcionActividad'] = CKEDITOR.instances['sDescripcionActividad'].getData();
     if (bUpdate) {      //si hay cambios se realiza el insert o el update
         //console.log(bNewRecord)
         if ( bNewRecord ){
@@ -377,6 +377,7 @@ function getDatos(datos) {
 function bvValidarForm(datos) {
     $("#profile").bootstrapValidator({
         message: 'Valor errorneo',
+        excluded: [':disabled'],   //necesario para el textArea con ckeditor
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
@@ -394,11 +395,33 @@ function bvValidarForm(datos) {
                     regexp: bvSoloTexto
                 }
             },
-            sDescripcionActividad: {
+           sDescripcionActividad: {
                 validators: {
-                    notEmpty: bvNoVacio
+                    notEmpty: bvNoVacio,
+                    callback: {
+                        message: 'La descripcion debe tener menos de 250 caracteres',
+                        callback: function (value, validator, $field) {
+                           // console.log($field," ",validator);
+                            
+                            // Get the plain text without HTML
+                            //var div = $('<div/>').html(value).get(0),
+                             //   text = div.textContent || div.innerText;
+                            // return text.length <= 2;
+                            textLenght = CKEDITOR.instances['sDescripcionActividad'].getData().replace(/<[^>]*>/gi, '').length - 1
+                            if (textLenght <= 250 && textLenght >= 0){
+                                console.log(textLenght <= 3 ,' ', textLenght >= 0, ' ' ,textLenght )
+                                validator.updateStatus('sDescripcionActividad', 'VALID');
+                                $("#cke_sDescripcionActividad").removeClass('bordeError');
+                                return true;
+                            }
+                            $("#cke_sDescripcionActividad").addClass('bordeError');
+                            validator.updateStatus('sDescripcionActividad', 'NOT_VALIDATED');
+                            return false;
+
+                        }
+                    }
                 }
-            },
+              },
             sTipoActividad:{
                 validators: {
                     notEmpty: bvNoVacio
@@ -406,37 +429,51 @@ function bvValidarForm(datos) {
             }
         }
     })
-        .on('status.field.bv', function(e, data){                               //acciones con el estado del campo
-            $(".control-label").css('color','#000');
-        })
-        .on('error.form.bv', function (e) {                                     //acciones cuando hay error en el formulario
-            //  console.log(e);
-            $("#btnActualizar").attr('disabled', false)
-        })
-        .on('success.form.bv', function (e) {                                   //actualizacion de datos y estados de campos del formularios con el envio correcto
-            e.preventDefault();
-            $("#btnActualizar").attr('disabled', 'disabled')
-            mostrarSpinner();
-            actualizar(datos);
-        })
-        .on('success.field.bv', function (e, data) {                               //acciones cuando success, por campo
-            //console.log( data.field);
+    .on('status.field.bv', function(e, data){
+        //acciones con el estado del campo
+        //console.log(data);
+        $(".control-label").css('color','#000');
+    })
+    .on('error.form.bv', function (e) {                                     //acciones cuando hay error en el formulario
+        //  console.log($(e.target));
+        var $form = $(e.target);
+        console.log($form.data('bootstrapValidator').getInvalidFields());
+        console.log(CKEDITOR.instances.sDescripcionActividad);
 
-        })
-        .on('error.field.bv', function (e, data) {                                  //acciones cuando existe error, por campo
-                //console.log( data.field);
-        })
-        .on('error.validator.bv', function (e, data) {                              //SOLO UN MENSAJE POR ERROR
-            // $(e.target)    --> The field element
-            // data.bv        --> The BootstrapValidator instance
-            // data.field     --> The field name
-            // data.element   --> The field element
-            // data.validator --> The current validator name
-            data.element
-                .data('bv.messages')
-                .find('.help-block[data-bv-for="' + data.field + '"]').hide()       // Ocultar todos los mensajes
-                .filter('[data-bv-validator="' + data.validator + '"]').show();     // mostrar solo el mensaje asociado con el actual validador
-        });
+        $("#btnActualizar").attr('disabled', false)
+    })
+    .on('success.form.bv', function (e) {                                   //actualizacion de datos y estados de campos del formularios con el envio correcto
+        e.preventDefault();
+        $("#btnActualizar").attr('disabled', 'disabled')
+        mostrarSpinner();
+        actualizar(datos);
+    })
+    .on('success.field.bv', function (e, data) {                               //acciones cuando success, por campo
+        //console.log( data.field);
+
+    })
+    .on('error.field.bv', function (e, data) {                                  //acciones cuando existe error, por campo
+          //  console.log( data.field);
+
+    })
+    .on('error.validator.bv', function (e, data) {                              //SOLO UN MENSAJE POR ERROR
+         //console.log ( $(e.target) );   // --> The field element
+        // data.bv        --> The BootstrapValidator instance
+       // console.log(data.field); //     --> The field name
+        // data.element   --> The field element
+        // data.validator --> The current validator name
+        data.element
+            .data('bv.messages')
+            .find('.help-block[data-bv-for="' + data.field + '"]').hide()       // Ocultar todos los mensajes
+            .filter('[data-bv-validator="' + data.validator + '"]').show();     // mostrar solo el mensaje asociado con el actual validador
+    });
+
+    CKEDITOR.instances.sDescripcionActividad.on('change', function (){
+      $('#profile').bootstrapValidator('revalidateField', 'sDescripcionActividad');
+
+  });
+
+
 }
 
 

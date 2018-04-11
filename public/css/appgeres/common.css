@@ -101,6 +101,10 @@ th, td{
     color: #ccc;
 }
 
+.bordeError {
+    border-color: #ff0000;
+}
+
 /* Fixes for IE < 8 */
 @media screen\9 {
     .fileinput-button input {

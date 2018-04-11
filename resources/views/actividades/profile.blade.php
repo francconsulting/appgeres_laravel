@@ -79,18 +79,14 @@
                             <div class="form-group">
                                 <label for="sDescripcionActividad" class="col-sm-2 control-label">Descripción:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control " id="sDescripcionActividad" name="sDescripcionActividad"
-                                           placeholder="Descripción de la actividad">
+                                  <!--  <input type="text" class="form-control " id="sDescripcionActividad" name="sDescripcionActividad"
+                                           placeholder="Descripción de la actividad">-->
+                                    <textarea class="form-control " name="sDescripcionActividad" id="sDescripcionActividad" rows="10" cols="50">
+                                    </textarea>
+                                    <script>  CKEDITOR.replace('sDescripcionActividad' );</script>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="sDescripcionActividad" class="col-sm-2 control-label">Descripción:</label>
-                                <div class="col-sm-10">
-                                   <textarea  name="editor1" id="editor1" rows="10" cols="50">
-                                Este es el textarea que es modificado por la clase ckeditor
-                            </textarea>
-                                </div>
-                            </div>
+
                             <div class="form-group">
                                 <label for="sTipoActividad" class="col-sm-2 control-label">Tipo:</label>
                                 <div class="col-sm-10">

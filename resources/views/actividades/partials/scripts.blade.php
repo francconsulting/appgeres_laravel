@@ -8,7 +8,8 @@
 //scripts especificos para el modulo
 <script src="{{ url ('js/appgeres/actividad/actividad.js') }}" type="text/javascript"></script>
 
-<script src="{{ url ('plugins/ckeditor.js') }}" type="text/javascript"></script>
+<script src="{{ url ('vendor/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+<script src="{{ url ('vendor/ckeditor/adapters/jquery.js') }}" type="text/javascript"></script>
 
 
 //script para los DataTables
