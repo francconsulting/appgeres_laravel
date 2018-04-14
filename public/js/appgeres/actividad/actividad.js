@@ -364,7 +364,6 @@ function getDatos(datos) {
     $("form input").attr("disabled", inputDesactivo);   //habilitar o desabilitar los campos del formulario
 
     ventanaModal();     //abrir ventana modal
-    toggleAvatar();  //canbiar la imagen del avatar
     bvValidarForm(datos);  //comprobaciones de validacion del formulario
 }
 

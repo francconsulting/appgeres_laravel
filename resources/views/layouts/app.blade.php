@@ -36,7 +36,7 @@ desired effect
 
     @include('adminlte::layouts.partials.mainheader')
 
-    @include('adminlte::layouts.partials.sidebar')
+    @include('layouts.partials.sidebar')
 
     <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
