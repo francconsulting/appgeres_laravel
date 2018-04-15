@@ -33,17 +33,12 @@
         <ul class="sidebar-menu">
             <li class="header">{{ trans('adminlte_lang::message.header') }}</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="{{ url('home') }}"><i class='fa fa-link'></i> <span>{{ trans('adminlte_lang::message.home') }}</span></a></li>
-            <li><a href="{{ url('sanitario') }}"><i class='fa fa-link'></i> <span>Personal sanitario</span></a></li>
-            <li><a href="#"><i class='fa fa-link'></i> <span>{{ trans('adminlte_lang::message.anotherlink') }}</span></a></li>
-            <li class="treeview">
-                <a href="#"><i class='fa fa-link'></i> <span>{{ trans('adminlte_lang::message.multilevel') }}</span> <i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="#">{{ trans('adminlte_lang::message.linklevel2') }}</a></li>
-                    <li><a href="#">{{ trans('adminlte_lang::message.linklevel2') }}</a></li>
-                </ul>
-            </li>
+            <li {{ App\Http\Models\Utils::current_page('home') ? "class=active" : ""}}><a href="{{ url('home') }}"><i class='fa fa-home'></i> <span>{{ trans('adminlte_lang::message.home') }}</span></a></li>
+            <li {{ App\Http\Models\Utils::current_page('sanitario') ? "class=active" : ""}}><a href="{{ url('sanitario') }}"><i class='fa fa-stethoscope'></i> <span>Personal sanitario </span></a></li>
+            <li {{ App\Http\Models\Utils::current_page('residente') ? "class=active" : ""}}><a href="{{ url('residente') }}"><i class='fa fa-bed'></i> <span>Residentes </span></a></li>
+            <li {{ App\Http\Models\Utils::current_page('actividad') ? "class=active" : ""}}><a href="{{ url('actividad') }}"><i class='fa fa-list-ul'></i> <span>Actividades </span></a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
+
 </aside>

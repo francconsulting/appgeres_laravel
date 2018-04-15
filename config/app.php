@@ -182,6 +182,7 @@ return [
          */
         Acacha\AdminLTETemplateLaravel\Providers\AdminLTETemplateServiceProvider::class,
 
+
     ],
 
     /*
