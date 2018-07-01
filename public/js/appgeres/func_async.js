@@ -9,6 +9,7 @@
  * @param parametros    String con los datos que seran enviados al servidor
  * @param tipo          Metodo por el que seran enviado los datos (GET o POST)
  * @param tipoDato      Tipo de datos que seran recibidos del servidor (xml, html, json, text, script, jsonp)
+ * @param async         Boolean que indica la asisncronia de la petición
  */
 function callAjax(url,cbDoneFuncion, cbFailFuntion ,parametros,tipo,tipoDato, async) {
        //console.log(parametros);
@@ -46,7 +47,6 @@ function callAjax(url,cbDoneFuncion, cbFailFuntion ,parametros,tipo,tipoDato, as
             cbFailFuntion(jqXHR);  //funcion callback en caso de error
             //$("#mensaje").addClass("error").text("Se ha producido un error:" + jqXHR.status+ " "+jqXHR.statusText); //si hay algun error en la llamada muestra un mensaje
         })
-
        /* .always(function(jqXHR){  //completada la peticion
             $("#mensaje").addClass("error").html("Se ha producido un error:" + jqXHR.status+" -> "+smgErr); //si hay algun error en la llamada muestra un mensaje
         })*/

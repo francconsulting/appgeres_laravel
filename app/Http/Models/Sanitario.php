@@ -15,7 +15,7 @@ class Sanitario extends Model
 
 
     protected $table = 'sanitarios';  //tabla asociada al modelo
-    protected $guarded = ['id', 'dtA', 'dtU', 'deleted_at'] ;      //proteger que no se pueda asignar en masa porpiedad con algún valor
+    protected $guarded = ['id', 'dtA', 'dtU', 'deleted_at'] ;      //proteger que no se pueda asignar en masa propiedad con algún valor
     protected $dates = ['deleted_at']; //campo para el borrado logico
 
 

@@ -1,12 +1,8 @@
 @extends('layouts.app')
 
-
 @section('htmlheader_title')
     - {{$modulo}}
-
 @endsection
-
-
 
 @section('contentheader_title')
     {{ $modulo }}
@@ -31,17 +27,19 @@
             <table id="listaUsuario" class="table table-bordered table-striped dataTable" cellpadding="3" cellspacing="2">
                 <thead>
                 <tr>
-                    <th>nº</th>
-                    <th></th>
-                    <th>id</th>
+                    <th>ID</th>
+                    <th>Avatar</th>
+                    <th>DNI</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Rol</th>
                     <th></th>
                 </tr>
                 {{csrf_field()}}
                 </thead>
                 <tbody>
+                <!-- carga de los datos con el plugin DataTables,
+                    no usamos este foreach de Blade
+                 -->
                {{-- @foreach($sanitarios as $item)    --}}
                     <tr class="item{{--$item->id--}}">
                         <td></td>

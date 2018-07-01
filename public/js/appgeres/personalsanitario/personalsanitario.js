@@ -89,36 +89,33 @@ function Table() {
         },
         "columns": [                        //columnas a mostrar en la tabla
             {
-                "data": "sDni",
-                "width": "5%"
+                "data": "id",
+                "width": "7%"
             },
             {
                 "data": "sAvatar",
-                "width": "5%",
+                "width": "7%",
                 "render": function (data, type, row) {          //mostrar una imagen en la tabla
                     return '<img src="/images/avatar_user/' + data + '" width="25" height="25" class="img-circle" title="' + row.sNombre + " " + row.sApellidos + '" alt="Avatar usuario">';
                 }
             },
             {
-                "data": "id",
+                "data": "sDni",
                 "width": "10%"
             },
             {
                 "data": "sNombre",
-                "width": "25%"
+                "width": "27%"
             },
             {
                 "data": "sApellidos",
-                "width": "25%"
+                "width": "37%"
             },
-            {
-                "data": "sDni",
-                "width": "12%"
-            },
+
             //crear la columna con los botones
             {
                 "defaultContent": "<button type='button' class='ver btn btn-xs btn-primary' title='ver'><i class='glyphicon glyphicon-eye-open'></i></button>\t<button type='button' class='editar btn btn-xs btn-primary' title='modificar'><i class='glyphicon glyphicon-pencil'></i></button>\t<button type='button'  class='eliminar btn btn-xs btn-danger' data-toggle='modal' data-target='#modalEliminar' data-backdrop='static' title='borrar'><i class='glyphicon glyphicon-trash'></i></button>",
-                "width": "15%"
+                "width": "10%"
             }
 
         ],
